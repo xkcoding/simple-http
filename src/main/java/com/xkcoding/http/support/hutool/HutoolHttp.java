@@ -16,8 +16,14 @@
 
 package com.xkcoding.http.support.hutool;
 
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import com.xkcoding.http.constants.Constants;
 import com.xkcoding.http.support.Http;
 import com.xkcoding.http.support.HttpHeader;
+import com.xkcoding.http.util.MapUtil;
+import com.xkcoding.http.util.StringUtil;
+import com.xkcoding.http.util.UrlUtil;
 
 import java.util.Map;
 
@@ -30,6 +36,17 @@ import java.util.Map;
  * @date Created in 2019/12/24 19:08
  */
 public class HutoolHttp implements Http {
+	private String exec(HttpRequest request) {
+		request = request.timeout(Constants.TIMEOUT * 1000);
+
+		HttpResponse response = request.execute();
+		if (!response.isOk()) {
+			throw new RuntimeException("Unexpected code " + response);
+		}
+
+		return response.body();
+	}
+
 	/**
 	 * GET 请求
 	 *
@@ -38,7 +55,7 @@ public class HutoolHttp implements Http {
 	 */
 	@Override
 	public String get(String url) {
-		return null;
+		return this.get(url, null, false);
 	}
 
 	/**
@@ -46,11 +63,12 @@ public class HutoolHttp implements Http {
 	 *
 	 * @param url    URL
 	 * @param params 参数
+	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
 	@Override
-	public String get(String url, Map<String, String> params) {
-		return null;
+	public String get(String url, Map<String, String> params, boolean encode) {
+		return this.get(url, params, null, encode);
 	}
 
 	/**
@@ -59,11 +77,21 @@ public class HutoolHttp implements Http {
 	 * @param url    URL
 	 * @param params 参数
 	 * @param header 请求头
+	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
 	@Override
-	public String get(String url, Map<String, String> params, HttpHeader header) {
-		return null;
+	public String get(String url, Map<String, String> params, HttpHeader header, boolean encode) {
+		String baseUrl = StringUtil.appendIfNotContain(url, "?", "&");
+		url = baseUrl + MapUtil.parseMapToString(params, encode);
+
+		HttpRequest request = HttpRequest.get(url);
+
+		if (header != null) {
+			MapUtil.forEach(header.getHeaders(), request::header);
+		}
+
+		return exec(request);
 	}
 
 	/**
@@ -75,7 +103,7 @@ public class HutoolHttp implements Http {
 	 */
 	@Override
 	public String post(String url, String data) {
-		return null;
+		return this.post(url, data, null);
 	}
 
 	/**
@@ -88,7 +116,12 @@ public class HutoolHttp implements Http {
 	 */
 	@Override
 	public String post(String url, String data, HttpHeader header) {
-		return null;
+		HttpRequest request = HttpRequest.post(url).body(data);
+
+		if (header != null) {
+			MapUtil.forEach(header.getHeaders(), request::header);
+		}
+		return this.exec(request);
 	}
 
 	/**
@@ -96,11 +129,12 @@ public class HutoolHttp implements Http {
 	 *
 	 * @param url    URL
 	 * @param params form 参数
+	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
 	@Override
-	public String post(String url, Map<String, String> params) {
-		return null;
+	public String post(String url, Map<String, String> params, boolean encode) {
+		return this.post(url, params, null, encode);
 	}
 
 	/**
@@ -109,10 +143,22 @@ public class HutoolHttp implements Http {
 	 * @param url    URL
 	 * @param params form 参数
 	 * @param header 请求头
+	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
 	@Override
-	public String post(String url, Map<String, String> params, HttpHeader header) {
-		return null;
+	public String post(String url, Map<String, String> params, HttpHeader header, boolean encode) {
+		HttpRequest request = HttpRequest.post(url);
+
+		if (encode) {
+			MapUtil.forEach(params, (k, v) -> request.form(k, UrlUtil.urlEncode(v)));
+		} else {
+			MapUtil.forEach(params, request::form);
+		}
+
+		if (header != null) {
+			MapUtil.forEach(header.getHeaders(), request::header);
+		}
+		return this.exec(request);
 	}
 }
