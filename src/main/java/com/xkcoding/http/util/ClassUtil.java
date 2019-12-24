@@ -14,37 +14,35 @@
  * limitations under the License.
  */
 
-package com.xkcoding.http.support;
+package com.xkcoding.http.util;
 
-import java.util.HashMap;
-import java.util.Map;
+import lombok.experimental.UtilityClass;
 
 /**
  * <p>
- * 请求头封装
+ * 类工具类
  * </p>
  *
  * @author yangkai.shen
- * @date Created in 2019/12/24 18:24
+ * @date Created in 2019/12/24 18:58
  */
-public class HttpHeader {
-	private final Map<String, String> headers;
+@UtilityClass
+public class ClassUtil {
 
-	public HttpHeader() {
-		this.headers = new HashMap<>(16);
+	/**
+	 * 确定class是否可以被加载
+	 *
+	 * @param className   完整类名
+	 * @param classLoader 类加载
+	 * @return {boolean}
+	 */
+	public boolean isPresent(String className, ClassLoader classLoader) {
+		try {
+			Class.forName(className, true, classLoader);
+			return true;
+		} catch (Throwable ex) {
+			return false;
+		}
 	}
 
-	public HttpHeader(Map<String, String> headers) {
-		this.headers = headers;
-	}
-
-	public HttpHeader add(String key, String value) {
-		this.headers.put(key, value);
-		return this;
-	}
-
-	public HttpHeader addAll(Map<String, String> headers) {
-		this.headers.putAll(headers);
-		return this;
-	}
 }
