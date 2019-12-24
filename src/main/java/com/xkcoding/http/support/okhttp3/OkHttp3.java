@@ -16,9 +16,14 @@
 
 package com.xkcoding.http.support.okhttp3;
 
+import com.xkcoding.http.constants.Constants;
 import com.xkcoding.http.support.Http;
 import com.xkcoding.http.support.HttpHeader;
+import com.xkcoding.http.util.MapUtil;
+import okhttp3.*;
 
+import java.io.IOException;
+import java.time.Duration;
 import java.util.Map;
 
 /**
@@ -30,6 +35,31 @@ import java.util.Map;
  * @date Created in 2019/12/24 19:06
  */
 public class OkHttp3 implements Http {
+	private OkHttpClient httpClient;
+	public static final MediaType CONTENT_TYPE_JSON = MediaType.get("application/json; charset=utf-8");
+
+	public OkHttp3() {
+		this.httpClient = new OkHttpClient().newBuilder()
+			.connectTimeout(Duration.ofSeconds(Constants.TIMEOUT))
+			.writeTimeout(Duration.ofSeconds(Constants.TIMEOUT))
+			.readTimeout(Duration.ofSeconds(Constants.TIMEOUT))
+			.build();
+	}
+
+	private String exec(Request request) {
+		try {
+			Response response = httpClient.newCall(request).execute();
+
+			if (!response.isSuccessful()) {
+				throw new RuntimeException("Unexpected code " + response);
+			}
+
+			return response.body().string();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	/**
 	 * GET 请求
 	 *
@@ -38,7 +68,7 @@ public class OkHttp3 implements Http {
 	 */
 	@Override
 	public String get(String url) {
-		return null;
+		return this.get(url, null, false);
 	}
 
 	/**
@@ -46,11 +76,12 @@ public class OkHttp3 implements Http {
 	 *
 	 * @param url    URL
 	 * @param params 参数
+	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
 	@Override
-	public String get(String url, Map<String, String> params) {
-		return null;
+	public String get(String url, Map<String, String> params, boolean encode) {
+		return this.get(url, params, null, encode);
 	}
 
 	/**
@@ -59,11 +90,26 @@ public class OkHttp3 implements Http {
 	 * @param url    URL
 	 * @param params 参数
 	 * @param header 请求头
+	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
 	@Override
-	public String get(String url, Map<String, String> params, HttpHeader header) {
-		return null;
+	public String get(String url, Map<String, String> params, HttpHeader header, boolean encode) {
+		HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
+		if (encode) {
+			MapUtil.forEach(params, urlBuilder::addEncodedQueryParameter);
+		} else {
+			MapUtil.forEach(params, urlBuilder::addQueryParameter);
+		}
+		HttpUrl httpUrl = urlBuilder.build();
+
+		Request.Builder requestBuilder = new Request.Builder().url(httpUrl);
+		if (header != null) {
+			MapUtil.forEach(header.getHeaders(), requestBuilder::addHeader);
+		}
+		Request request = requestBuilder.get().build();
+
+		return exec(request);
 	}
 
 	/**
@@ -75,7 +121,7 @@ public class OkHttp3 implements Http {
 	 */
 	@Override
 	public String post(String url, String data) {
-		return null;
+		return this.post(url, data, null);
 	}
 
 	/**
@@ -88,7 +134,15 @@ public class OkHttp3 implements Http {
 	 */
 	@Override
 	public String post(String url, String data, HttpHeader header) {
-		return null;
+		RequestBody body = RequestBody.create(data, CONTENT_TYPE_JSON);
+
+		Request.Builder requestBuilder = new Request.Builder().url(url);
+		if (header != null) {
+			MapUtil.forEach(header.getHeaders(), requestBuilder::addHeader);
+		}
+		Request request = requestBuilder.post(body).build();
+
+		return exec(request);
 	}
 
 	/**
@@ -96,11 +150,12 @@ public class OkHttp3 implements Http {
 	 *
 	 * @param url    URL
 	 * @param params form 参数
+	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
 	@Override
-	public String post(String url, Map<String, String> params) {
-		return null;
+	public String post(String url, Map<String, String> params, boolean encode) {
+		return this.post(url, params, null, encode);
 	}
 
 	/**
@@ -109,10 +164,25 @@ public class OkHttp3 implements Http {
 	 * @param url    URL
 	 * @param params form 参数
 	 * @param header 请求头
+	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
 	@Override
-	public String post(String url, Map<String, String> params, HttpHeader header) {
-		return null;
+	public String post(String url, Map<String, String> params, HttpHeader header, boolean encode) {
+		FormBody.Builder formBuilder = new FormBody.Builder();
+		if (encode) {
+			MapUtil.forEach(params, formBuilder::addEncoded);
+		} else {
+			MapUtil.forEach(params, formBuilder::add);
+		}
+		FormBody body = formBuilder.build();
+
+		Request.Builder requestBuilder = new Request.Builder().url(url);
+		if (header != null) {
+			MapUtil.forEach(header.getHeaders(), requestBuilder::addHeader);
+		}
+		Request request = requestBuilder.post(body).build();
+
+		return exec(request);
 	}
 }
