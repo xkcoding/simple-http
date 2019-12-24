@@ -69,10 +69,11 @@ public class HttpUtil {
 	 *
 	 * @param url    URL
 	 * @param params 参数
+	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
-	public String get(String url, Map<String, String> params) {
-		return proxy.get(url, params);
+	public String get(String url, Map<String, String> params, boolean encode) {
+		return proxy.get(url, params, encode);
 	}
 
 	/**
@@ -81,10 +82,11 @@ public class HttpUtil {
 	 * @param url    URL
 	 * @param params 参数
 	 * @param header 请求头
+	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
-	public String get(String url, Map<String, String> params, HttpHeader header) {
-		return proxy.get(url, params, header);
+	public String get(String url, Map<String, String> params, HttpHeader header, boolean encode) {
+		return proxy.get(url, params, header, encode);
 	}
 
 	/**
@@ -115,10 +117,11 @@ public class HttpUtil {
 	 *
 	 * @param url    URL
 	 * @param params form 参数
+	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
-	public String post(String url, Map<String, String> params) {
-		return proxy.post(url, params);
+	public String post(String url, Map<String, String> params, boolean encode) {
+		return proxy.post(url, params, encode);
 	}
 
 	/**
@@ -127,9 +130,10 @@ public class HttpUtil {
 	 * @param url    URL
 	 * @param params form 参数
 	 * @param header 请求头
+	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
-	public String post(String url, Map<String, String> params, HttpHeader header) {
-		return proxy.post(url, params, header);
+	public String post(String url, Map<String, String> params, HttpHeader header, boolean encode) {
+		return proxy.post(url, params, header, encode);
 	}
 }
