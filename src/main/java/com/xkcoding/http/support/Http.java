@@ -59,6 +59,14 @@ public interface Http {
 	/**
 	 * POST 请求
 	 *
+	 * @param url URL
+	 * @return 结果
+	 */
+	String post(String url);
+
+	/**
+	 * POST 请求
+	 *
 	 * @param url  URL
 	 * @param data JSON 参数
 	 * @return 结果

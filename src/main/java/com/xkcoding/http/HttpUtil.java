@@ -92,6 +92,16 @@ public class HttpUtil {
 	/**
 	 * POST 请求
 	 *
+	 * @param url URL
+	 * @return 结果
+	 */
+	public String post(String url) {
+		return proxy.post(url);
+	}
+
+	/**
+	 * POST 请求
+	 *
 	 * @param url  URL
 	 * @param data JSON 参数
 	 * @return 结果

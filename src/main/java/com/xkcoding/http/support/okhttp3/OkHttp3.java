@@ -115,6 +115,17 @@ public class OkHttp3 implements Http {
 	/**
 	 * POST 请求
 	 *
+	 * @param url URL
+	 * @return 结果
+	 */
+	@Override
+	public String post(String url) {
+		return this.post(url, "");
+	}
+
+	/**
+	 * POST 请求
+	 *
 	 * @param url  URL
 	 * @param data JSON 参数
 	 * @return 结果
