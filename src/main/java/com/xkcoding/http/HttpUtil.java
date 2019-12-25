@@ -44,6 +44,10 @@ public class HttpUtil {
 		if (ClassUtil.isPresent("okhttp3.OkHttpClient", HttpUtil.class.getClassLoader())) {
 			defaultProxy = new OkHttp3Impl();
 		}
+		// 基于 httpclient
+		else if (ClassUtil.isPresent("org.apache.http.impl.client.HttpClients", HttpUtil.class.getClassLoader())) {
+			defaultProxy = new HttpClientImpl();
+		}
 		// 基于 hutool
 		else if (ClassUtil.isPresent("cn.hutool.http.HttpRequest", HttpUtil.class.getClassLoader())) {
 			defaultProxy = new HutoolImpl();
