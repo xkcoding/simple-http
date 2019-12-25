@@ -36,7 +36,7 @@ import java.util.Map;
  * @date Created in 2019/12/24 19:06
  */
 public class OkHttp3Impl implements Http {
-	private OkHttpClient httpClient;
+	private final OkHttpClient httpClient;
 	public static final MediaType CONTENT_TYPE_JSON = MediaType.get(Constants.CONTENT_TYPE_JSON);
 
 	public OkHttp3Impl() {

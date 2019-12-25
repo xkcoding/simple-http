@@ -48,7 +48,7 @@ import java.util.Map;
  * @date Created in 2019/12/25 09:24
  */
 public class HttpClientImpl implements Http {
-	private CloseableHttpClient httpClient;
+	private final CloseableHttpClient httpClient;
 
 	public HttpClientImpl() {
 		this.httpClient = HttpClients.createDefault();
