@@ -18,8 +18,9 @@ package com.xkcoding.http;
 
 import com.xkcoding.http.support.Http;
 import com.xkcoding.http.support.HttpHeader;
-import com.xkcoding.http.support.hutool.HutoolHttp;
-import com.xkcoding.http.support.okhttp3.OkHttp3;
+import com.xkcoding.http.support.httpclient.HttpClientImpl;
+import com.xkcoding.http.support.hutool.HutoolImpl;
+import com.xkcoding.http.support.okhttp3.OkHttp3Impl;
 import com.xkcoding.http.util.ClassUtil;
 import lombok.experimental.UtilityClass;
 
@@ -41,11 +42,11 @@ public class HttpUtil {
 		Http defaultProxy = null;
 		// 基于 okhttp3
 		if (ClassUtil.isPresent("okhttp3.OkHttpClient", HttpUtil.class.getClassLoader())) {
-			defaultProxy = new OkHttp3();
+			defaultProxy = new OkHttp3Impl();
 		}
 		// 基于 hutool
 		else if (ClassUtil.isPresent("cn.hutool.http.HttpRequest", HttpUtil.class.getClassLoader())) {
-			defaultProxy = new HutoolHttp();
+			defaultProxy = new HutoolImpl();
 		}
 		proxy = defaultProxy;
 	}

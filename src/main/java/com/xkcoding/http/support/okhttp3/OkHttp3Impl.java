@@ -14,37 +14,48 @@
  * limitations under the License.
  */
 
-package com.xkcoding.http.support.hutool;
+package com.xkcoding.http.support.okhttp3;
 
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
 import com.xkcoding.http.constants.Constants;
 import com.xkcoding.http.support.Http;
 import com.xkcoding.http.support.HttpHeader;
 import com.xkcoding.http.util.MapUtil;
-import com.xkcoding.http.util.StringUtil;
-import com.xkcoding.http.util.UrlUtil;
+import okhttp3.*;
 
+import java.io.IOException;
+import java.time.Duration;
 import java.util.Map;
 
 /**
  * <p>
- * Hutool 实现
+ * OkHttp3 实现
  * </p>
  *
  * @author yangkai.shen
- * @date Created in 2019/12/24 19:08
+ * @date Created in 2019/12/24 19:06
  */
-public class HutoolHttp implements Http {
-	private String exec(HttpRequest request) {
-		request = request.timeout(Constants.TIMEOUT * 1000);
+public class OkHttp3Impl implements Http {
+	private OkHttpClient httpClient;
+	public static final MediaType CONTENT_TYPE_JSON = MediaType.get("application/json; charset=utf-8");
 
-		HttpResponse response = request.execute();
-		if (!response.isOk()) {
-			throw new RuntimeException("Unexpected code " + response);
+	public OkHttp3Impl() {
+		this.httpClient = new OkHttpClient().newBuilder()
+			.connectTimeout(Duration.ofSeconds(Constants.TIMEOUT))
+			.writeTimeout(Duration.ofSeconds(Constants.TIMEOUT))
+			.readTimeout(Duration.ofSeconds(Constants.TIMEOUT))
+			.build();
+	}
+
+	private String exec(Request request) {
+		try (Response response = httpClient.newCall(request).execute()) {
+			if (!response.isSuccessful()) {
+				throw new RuntimeException("Unexpected code " + response);
+			}
+
+			return response.body().string();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
-
-		return response.body();
 	}
 
 	/**
@@ -82,14 +93,19 @@ public class HutoolHttp implements Http {
 	 */
 	@Override
 	public String get(String url, Map<String, String> params, HttpHeader header, boolean encode) {
-		String baseUrl = StringUtil.appendIfNotContain(url, "?", "&");
-		url = baseUrl + MapUtil.parseMapToString(params, encode);
-
-		HttpRequest request = HttpRequest.get(url);
-
-		if (header != null) {
-			MapUtil.forEach(header.getHeaders(), request::header);
+		HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
+		if (encode) {
+			MapUtil.forEach(params, urlBuilder::addEncodedQueryParameter);
+		} else {
+			MapUtil.forEach(params, urlBuilder::addQueryParameter);
 		}
+		HttpUrl httpUrl = urlBuilder.build();
+
+		Request.Builder requestBuilder = new Request.Builder().url(httpUrl);
+		if (header != null) {
+			MapUtil.forEach(header.getHeaders(), requestBuilder::addHeader);
+		}
+		Request request = requestBuilder.get().build();
 
 		return exec(request);
 	}
@@ -102,8 +118,7 @@ public class HutoolHttp implements Http {
 	 */
 	@Override
 	public String post(String url) {
-		HttpRequest request = HttpRequest.post(url);
-		return this.exec(request);
+		return this.post(url, "");
 	}
 
 	/**
@@ -128,12 +143,15 @@ public class HutoolHttp implements Http {
 	 */
 	@Override
 	public String post(String url, String data, HttpHeader header) {
-		HttpRequest request = HttpRequest.post(url).body(data);
+		RequestBody body = RequestBody.create(data, CONTENT_TYPE_JSON);
 
+		Request.Builder requestBuilder = new Request.Builder().url(url);
 		if (header != null) {
-			MapUtil.forEach(header.getHeaders(), request::header);
+			MapUtil.forEach(header.getHeaders(), requestBuilder::addHeader);
 		}
-		return this.exec(request);
+		Request request = requestBuilder.post(body).build();
+
+		return exec(request);
 	}
 
 	/**
@@ -160,17 +178,20 @@ public class HutoolHttp implements Http {
 	 */
 	@Override
 	public String post(String url, Map<String, String> params, HttpHeader header, boolean encode) {
-		HttpRequest request = HttpRequest.post(url);
-
+		FormBody.Builder formBuilder = new FormBody.Builder();
 		if (encode) {
-			MapUtil.forEach(params, (k, v) -> request.form(k, UrlUtil.urlEncode(v)));
+			MapUtil.forEach(params, formBuilder::addEncoded);
 		} else {
-			MapUtil.forEach(params, request::form);
+			MapUtil.forEach(params, formBuilder::add);
 		}
+		FormBody body = formBuilder.build();
 
+		Request.Builder requestBuilder = new Request.Builder().url(url);
 		if (header != null) {
-			MapUtil.forEach(header.getHeaders(), request::header);
+			MapUtil.forEach(header.getHeaders(), requestBuilder::addHeader);
 		}
-		return this.exec(request);
+		Request request = requestBuilder.post(body).build();
+
+		return exec(request);
 	}
 }
