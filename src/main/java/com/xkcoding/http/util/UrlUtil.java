@@ -16,12 +16,11 @@
 
 package com.xkcoding.http.util;
 
+import com.xkcoding.http.constants.Constants;
 import lombok.experimental.UtilityClass;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 /**
  * <p>
@@ -33,8 +32,6 @@ import java.nio.charset.StandardCharsets;
  */
 @UtilityClass
 public class UrlUtil {
-	private static final Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
-
 	/**
 	 * 编码
 	 *
@@ -46,7 +43,7 @@ public class UrlUtil {
 			return "";
 		}
 		try {
-			String encoded = URLEncoder.encode(value, DEFAULT_ENCODING.displayName());
+			String encoded = URLEncoder.encode(value, Constants.DEFAULT_ENCODING.displayName());
 			return encoded.replace("+", "%20").replace("*", "%2A").replace("~", "%7E").replace("/", "%2F");
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException("Failed To Encode Uri", e);

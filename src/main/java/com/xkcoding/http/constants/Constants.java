@@ -16,6 +16,9 @@
 
 package com.xkcoding.http.constants;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 /**
  * <p>
  * 常量池
@@ -26,7 +29,22 @@ package com.xkcoding.http.constants;
  */
 public interface Constants {
 	/**
-	 * 超时时长
+	 * 超时时长，单位毫秒
 	 */
-	int TIMEOUT = 30;
+	int TIMEOUT = 3000;
+
+	/**
+	 * 编码格式
+	 */
+	Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
+
+	/**
+	 * JSON
+	 */
+	String CONTENT_TYPE_JSON = "application/json; charset=utf-8";
+
+	/**
+	 * 空字符串
+	 */
+	String EMPTY = "";
 }

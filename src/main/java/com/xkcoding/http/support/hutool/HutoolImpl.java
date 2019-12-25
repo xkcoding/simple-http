@@ -37,7 +37,7 @@ import java.util.Map;
  */
 public class HutoolImpl implements Http {
 	private String exec(HttpRequest request) {
-		request = request.timeout(Constants.TIMEOUT * 1000);
+		request = request.timeout(Constants.TIMEOUT);
 		try (HttpResponse response = request.execute()) {
 			if (!response.isOk()) {
 				throw new RuntimeException("Unexpected code " + response);
@@ -128,7 +128,11 @@ public class HutoolImpl implements Http {
 	 */
 	@Override
 	public String post(String url, String data, HttpHeader header) {
-		HttpRequest request = HttpRequest.post(url).body(data);
+		HttpRequest request = HttpRequest.post(url);
+
+		if (StringUtil.isNotEmpty(data)) {
+			request.body(data);
+		}
 
 		if (header != null) {
 			MapUtil.forEach(header.getHeaders(), request::header);

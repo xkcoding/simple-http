@@ -20,6 +20,7 @@ import com.xkcoding.http.constants.Constants;
 import com.xkcoding.http.support.Http;
 import com.xkcoding.http.support.HttpHeader;
 import com.xkcoding.http.util.MapUtil;
+import com.xkcoding.http.util.StringUtil;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -36,13 +37,13 @@ import java.util.Map;
  */
 public class OkHttp3Impl implements Http {
 	private OkHttpClient httpClient;
-	public static final MediaType CONTENT_TYPE_JSON = MediaType.get("application/json; charset=utf-8");
+	public static final MediaType CONTENT_TYPE_JSON = MediaType.get(Constants.CONTENT_TYPE_JSON);
 
 	public OkHttp3Impl() {
 		this.httpClient = new OkHttpClient().newBuilder()
-			.connectTimeout(Duration.ofSeconds(Constants.TIMEOUT))
-			.writeTimeout(Duration.ofSeconds(Constants.TIMEOUT))
-			.readTimeout(Duration.ofSeconds(Constants.TIMEOUT))
+			.connectTimeout(Duration.ofMillis(Constants.TIMEOUT))
+			.writeTimeout(Duration.ofMillis(Constants.TIMEOUT))
+			.readTimeout(Duration.ofMillis(Constants.TIMEOUT))
 			.build();
 	}
 
@@ -118,7 +119,7 @@ public class OkHttp3Impl implements Http {
 	 */
 	@Override
 	public String post(String url) {
-		return this.post(url, "");
+		return this.post(url, Constants.EMPTY);
 	}
 
 	/**
@@ -143,6 +144,9 @@ public class OkHttp3Impl implements Http {
 	 */
 	@Override
 	public String post(String url, String data, HttpHeader header) {
+		if (StringUtil.isEmpty(data)) {
+			data = Constants.EMPTY;
+		}
 		RequestBody body = RequestBody.create(data, CONTENT_TYPE_JSON);
 
 		Request.Builder requestBuilder = new Request.Builder().url(url);
