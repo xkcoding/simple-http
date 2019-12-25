@@ -16,12 +16,10 @@
 
 package com.xkcoding.http.util;
 
+import com.xkcoding.http.constants.Constants;
 import lombok.experimental.UtilityClass;
 
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 /**
@@ -97,5 +95,104 @@ public class MapUtil {
 			}
 		});
 		return String.join("&", paramList);
+	}
+
+	/**
+	 * 字符串转map，字符串格式为 {@code xxx=xxx&xxx=xxx}
+	 *
+	 * @param str    待转换的字符串
+	 * @param decode 是否解码
+	 * @return map
+	 */
+	public Map<String, String> parseStringToMap(String str, boolean decode) {
+		str = preProcess(str);
+
+		Map<String, String> params = new HashMap<>(16);
+		if (StringUtil.isEmpty(str)) {
+			return params;
+		}
+
+		if (!str.contains("&")) {
+			params.put(decode(str, decode), Constants.EMPTY);
+			return params;
+		}
+
+		final int len = str.length();
+		String name = null;
+		// 未处理字符开始位置
+		int pos = 0;
+		// 未处理字符结束位置
+		int i;
+		// 当前字符
+		char c;
+		for (i = 0; i < len; i++) {
+			c = str.charAt(i);
+			// 键值对的分界点
+			if (c == '=') {
+				if (null == name) {
+					// name可以是""
+					name = str.substring(pos, i);
+				}
+				pos = i + 1;
+			}
+			// 参数对的分界点
+			else if (c == '&') {
+				if (null == name && pos != i) {
+					// 对于像&a&这类无参数值的字符串，我们将name为a的值设为""
+					addParam(params, str.substring(pos, i), Constants.EMPTY, decode);
+				} else if (name != null) {
+					addParam(params, name, str.substring(pos, i), decode);
+					name = null;
+				}
+				pos = i + 1;
+			}
+		}
+
+		// 处理结尾
+		if (pos != i) {
+			if (name == null) {
+				addParam(params, str.substring(pos, i), Constants.EMPTY, decode);
+			} else {
+				addParam(params, name, str.substring(pos, i), decode);
+			}
+		} else if (name != null) {
+			addParam(params, name, Constants.EMPTY, decode);
+		}
+
+		return params;
+	}
+
+	private void addParam(Map<String, String> params, String key, String value, boolean decode) {
+		key = decode(key, decode);
+		value = decode(value, decode);
+		if (params.containsKey(key)) {
+			params.put(key, params.get(key) + "," + value);
+		} else {
+			params.put(key, value);
+		}
+	}
+
+	private String decode(String str, boolean decode) {
+		return decode ? UrlUtil.urlDecode(str) : str;
+	}
+
+
+	private String preProcess(String str) {
+		if (StringUtil.isEmpty(str)) {
+			return str;
+		}
+		// 去除 URL 路径信息
+		int beginPos = str.indexOf("?");
+		if (beginPos > -1) {
+			str = str.substring(beginPos + 1);
+		}
+
+		// 去除 # 后面的内容
+		int endPos = str.indexOf("#");
+		if (endPos > -1) {
+			str = str.substring(0, endPos);
+		}
+
+		return str;
 	}
 }
