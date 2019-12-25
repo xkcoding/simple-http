@@ -17,6 +17,7 @@
 package com.xkcoding.http.support.java11;
 
 import com.xkcoding.http.constants.Constants;
+import com.xkcoding.http.exception.SimpleHttpException;
 import com.xkcoding.http.support.Http;
 import com.xkcoding.http.support.HttpHeader;
 import com.xkcoding.http.util.MapUtil;
@@ -50,7 +51,7 @@ public class HttpClientImpl implements Http {
 		try {
 			return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
 		} catch (IOException | InterruptedException e) {
-			throw new RuntimeException(e);
+			throw new SimpleHttpException(e);
 		}
 	}
 

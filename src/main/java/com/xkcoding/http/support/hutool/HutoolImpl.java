@@ -19,6 +19,7 @@ package com.xkcoding.http.support.hutool;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.xkcoding.http.constants.Constants;
+import com.xkcoding.http.exception.SimpleHttpException;
 import com.xkcoding.http.support.Http;
 import com.xkcoding.http.support.HttpHeader;
 import com.xkcoding.http.util.MapUtil;
@@ -40,7 +41,7 @@ public class HutoolImpl implements Http {
 		request = request.timeout(Constants.TIMEOUT);
 		try (HttpResponse response = request.execute()) {
 			if (!response.isOk()) {
-				throw new RuntimeException("Unexpected code " + response);
+				throw new SimpleHttpException("Unexpected code " + response);
 			}
 
 			return response.body();

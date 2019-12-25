@@ -16,6 +16,7 @@
 
 package com.xkcoding.http;
 
+import com.xkcoding.http.exception.SimpleHttpException;
 import com.xkcoding.http.support.Http;
 import com.xkcoding.http.support.HttpHeader;
 import com.xkcoding.http.support.httpclient.HttpClientImpl;
@@ -63,6 +64,12 @@ public class HttpUtil {
 	public void setHttp(Http http) {
 		proxy = http;
 	}
+	
+	private void checkHttpNotNull(Http proxy) {
+		if (null == proxy) {
+			throw new SimpleHttpException("HTTP 实现类未指定！");
+		}
+	}
 
 	/**
 	 * GET 请求
@@ -71,6 +78,7 @@ public class HttpUtil {
 	 * @return 结果
 	 */
 	public String get(String url) {
+		checkHttpNotNull(proxy);
 		return proxy.get(url);
 	}
 
@@ -83,6 +91,7 @@ public class HttpUtil {
 	 * @return 结果
 	 */
 	public String get(String url, Map<String, String> params, boolean encode) {
+		checkHttpNotNull(proxy);
 		return proxy.get(url, params, encode);
 	}
 
@@ -96,6 +105,7 @@ public class HttpUtil {
 	 * @return 结果
 	 */
 	public String get(String url, Map<String, String> params, HttpHeader header, boolean encode) {
+		checkHttpNotNull(proxy);
 		return proxy.get(url, params, header, encode);
 	}
 
@@ -106,6 +116,7 @@ public class HttpUtil {
 	 * @return 结果
 	 */
 	public String post(String url) {
+		checkHttpNotNull(proxy);
 		return proxy.post(url);
 	}
 
@@ -117,6 +128,7 @@ public class HttpUtil {
 	 * @return 结果
 	 */
 	public String post(String url, String data) {
+		checkHttpNotNull(proxy);
 		return proxy.post(url, data);
 	}
 
@@ -129,6 +141,7 @@ public class HttpUtil {
 	 * @return 结果
 	 */
 	public String post(String url, String data, HttpHeader header) {
+		checkHttpNotNull(proxy);
 		return proxy.post(url, data, header);
 	}
 
@@ -141,6 +154,7 @@ public class HttpUtil {
 	 * @return 结果
 	 */
 	public String post(String url, Map<String, String> params, boolean encode) {
+		checkHttpNotNull(proxy);
 		return proxy.post(url, params, encode);
 	}
 
@@ -154,6 +168,7 @@ public class HttpUtil {
 	 * @return 结果
 	 */
 	public String post(String url, Map<String, String> params, HttpHeader header, boolean encode) {
+		checkHttpNotNull(proxy);
 		return proxy.post(url, params, header, encode);
 	}
 }

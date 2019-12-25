@@ -17,6 +17,7 @@
 package com.xkcoding.http.support.okhttp3;
 
 import com.xkcoding.http.constants.Constants;
+import com.xkcoding.http.exception.SimpleHttpException;
 import com.xkcoding.http.support.Http;
 import com.xkcoding.http.support.HttpHeader;
 import com.xkcoding.http.util.MapUtil;
@@ -55,12 +56,12 @@ public class OkHttp3Impl implements Http {
 	private String exec(Request request) {
 		try (Response response = httpClient.newCall(request).execute()) {
 			if (!response.isSuccessful()) {
-				throw new RuntimeException("Unexpected code " + response);
+				throw new SimpleHttpException("Unexpected code " + response);
 			}
 
 			return response.body().string();
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new SimpleHttpException(e);
 		}
 	}
 

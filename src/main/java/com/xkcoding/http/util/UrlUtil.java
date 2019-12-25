@@ -18,6 +18,7 @@ package com.xkcoding.http.util;
 
 import cn.hutool.core.exceptions.UtilException;
 import com.xkcoding.http.constants.Constants;
+import com.xkcoding.http.exception.SimpleHttpException;
 import lombok.experimental.UtilityClass;
 
 import java.io.UnsupportedEncodingException;
@@ -48,7 +49,7 @@ public class UrlUtil {
 			String encoded = URLEncoder.encode(value, Constants.DEFAULT_ENCODING.displayName());
 			return encoded.replace("+", "%20").replace("*", "%2A").replace("~", "%7E").replace("/", "%2F");
 		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException("Failed To Encode Uri", e);
+			throw new SimpleHttpException("Failed To Encode Uri", e);
 		}
 	}
 
@@ -67,7 +68,7 @@ public class UrlUtil {
 		try {
 			return URLDecoder.decode(url, Constants.DEFAULT_ENCODING.displayName());
 		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException("Unsupported encoding", e);
+			throw new SimpleHttpException("Unsupported encoding", e);
 		}
 	}
 }

@@ -29,11 +29,11 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class StringUtil {
 
-	public static boolean isEmpty(String str) {
+	public boolean isEmpty(String str) {
 		return null == str || str.trim().isEmpty();
 	}
 
-	public static boolean isNotEmpty(String str) {
+	public boolean isNotEmpty(String str) {
 		return !isEmpty(str);
 	}
 

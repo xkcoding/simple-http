@@ -17,6 +17,7 @@
 package com.xkcoding.http.support.httpclient;
 
 import com.xkcoding.http.constants.Constants;
+import com.xkcoding.http.exception.SimpleHttpException;
 import com.xkcoding.http.support.Http;
 import com.xkcoding.http.support.HttpHeader;
 import com.xkcoding.http.util.MapUtil;
@@ -68,7 +69,7 @@ public class HttpClientImpl implements Http {
 
 		try (CloseableHttpResponse response = this.httpClient.execute(request)) {
 			if (!isSuccess(response)) {
-				throw new RuntimeException("Unexpected code " + response);
+				throw new SimpleHttpException("Unexpected code " + response);
 			}
 
 			StringBuffer body = new StringBuffer();
@@ -78,7 +79,7 @@ public class HttpClientImpl implements Http {
 
 			return body.toString();
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new SimpleHttpException(e);
 		}
 	}
 
