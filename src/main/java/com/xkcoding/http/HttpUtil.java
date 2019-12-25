@@ -40,16 +40,21 @@ public class HttpUtil {
 
 	static {
 		Http defaultProxy = null;
+		ClassLoader classLoader = HttpUtil.class.getClassLoader();
+		// java 11 HttpClient
+		if (ClassUtil.isPresent("java.net.http.HttpClient", classLoader)) {
+			defaultProxy = new com.xkcoding.http.support.java11.HttpClientImpl();
+		}
 		// 基于 okhttp3
-		if (ClassUtil.isPresent("okhttp3.OkHttpClient", HttpUtil.class.getClassLoader())) {
+		if (ClassUtil.isPresent("okhttp3.OkHttpClient", classLoader)) {
 			defaultProxy = new OkHttp3Impl();
 		}
 		// 基于 httpclient
-		else if (ClassUtil.isPresent("org.apache.http.impl.client.HttpClients", HttpUtil.class.getClassLoader())) {
+		else if (ClassUtil.isPresent("org.apache.http.impl.client.HttpClients", classLoader)) {
 			defaultProxy = new HttpClientImpl();
 		}
 		// 基于 hutool
-		else if (ClassUtil.isPresent("cn.hutool.http.HttpRequest", HttpUtil.class.getClassLoader())) {
+		else if (ClassUtil.isPresent("cn.hutool.http.HttpRequest", classLoader)) {
 			defaultProxy = new HutoolImpl();
 		}
 		proxy = defaultProxy;

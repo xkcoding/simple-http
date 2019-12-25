@@ -54,6 +54,10 @@ public class HttpClientImpl implements Http {
 		this.httpClient = HttpClients.createDefault();
 	}
 
+	public HttpClientImpl(CloseableHttpClient httpClient) {
+		this.httpClient = httpClient;
+	}
+
 	private String exec(HttpRequestBase request) {
 		// 设置超时时长
 		request.setConfig(RequestConfig.custom()

@@ -44,6 +44,16 @@ public interface Constants {
 	String CONTENT_TYPE_JSON = "application/json; charset=utf-8";
 
 	/**
+	 * Content-Type
+	 */
+	String CONTENT_TYPE = "Content-Type";
+
+	/**
+	 * Content-Encoding
+	 */
+	String CONTENT_ENCODING = "Content-Encoding";
+
+	/**
 	 * 空字符串
 	 */
 	String EMPTY = "";
