@@ -21,6 +21,10 @@
 
 ## 特点
 
-- 默认会按照下面的优先级自行寻找底层实现，OkHttp3 -> httpclient -> hutool-http
+- 默认会按照下面的优先级自行寻找底层实现，`OkHttp3 -> httpclient -> hutool-http`
 - 也可以自行实现 `com.xkcoding.http.support.Http` 接口，通过 `HttpUtil.setHttp(new MyHttpImpl())` 设置进来
+
+## TODO
+
+- [ ] 集成 JDK11 的 HTTPClient
 
