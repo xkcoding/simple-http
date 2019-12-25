@@ -117,20 +117,6 @@
           </execution>
         </executions>
       </plugin>
-      <!-- GPG -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-gpg-plugin</artifactId>
-        <version>1.5</version>
-        <executions>
-          <execution>
-            <phase>verify</phase>
-            <goals>
-              <goal>sign</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <!-- 支持多个 source -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -239,6 +225,24 @@
   <profiles>
     <profile>
       <id>release</id>
+      <build>
+        <plugins>
+          <!-- GPG -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.5</version>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
       <distributionManagement>
         <snapshotRepository>
           <id>oss</id>
@@ -254,6 +258,24 @@
     </profile>
     <profile>
       <id>nexus</id>
+      <build>
+        <plugins>
+          <!-- GPG -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.5</version>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
       <distributionManagement>
         <!-- 发布版私服仓库 -->
         <repository>
@@ -271,6 +293,24 @@
     </profile>
     <profile>
       <id>github</id>
+      <build>
+        <plugins>
+          <!-- GPG -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.5</version>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
       <distributionManagement>
         <!-- 发布到GitHub仓库 -->
         <repository>
