@@ -51,7 +51,7 @@ public class HttpClientImpl implements Http {
 	private final CloseableHttpClient httpClient;
 
 	public HttpClientImpl() {
-		this.httpClient = HttpClients.createDefault();
+		this(HttpClients.createDefault());
 	}
 
 	public HttpClientImpl(CloseableHttpClient httpClient) {

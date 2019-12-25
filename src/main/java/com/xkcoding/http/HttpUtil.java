@@ -41,7 +41,7 @@ public class HttpUtil {
 	static {
 		Http defaultProxy = null;
 		ClassLoader classLoader = HttpUtil.class.getClassLoader();
-		// java 11 HttpClient
+		// 基于 java 11 HttpClient
 		if (ClassUtil.isPresent("java.net.http.HttpClient", classLoader)) {
 			defaultProxy = new com.xkcoding.http.support.java11.HttpClientImpl();
 		}

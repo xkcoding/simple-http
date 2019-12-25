@@ -139,7 +139,6 @@ public class HttpClientImpl implements Http {
 	public String post(String url, String data, HttpHeader header) {
 		HttpRequest.Builder builder = HttpRequest.newBuilder()
 			.uri(URI.create(url))
-			.POST(HttpRequest.BodyPublishers.noBody())
 			.timeout(Duration.ofMillis(Constants.TIMEOUT));
 
 		if (StringUtil.isNotEmpty(data)) {
