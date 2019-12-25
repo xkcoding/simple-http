@@ -46,7 +46,7 @@ public class HttpUtil {
 			defaultProxy = new com.xkcoding.http.support.java11.HttpClientImpl();
 		}
 		// 基于 okhttp3
-		if (ClassUtil.isPresent("okhttp3.OkHttpClient", classLoader)) {
+		else if (ClassUtil.isPresent("okhttp3.OkHttpClient", classLoader)) {
 			defaultProxy = new OkHttp3Impl();
 		}
 		// 基于 httpclient
