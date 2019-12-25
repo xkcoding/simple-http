@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2029, xkcoding & Yangkai.Shen & 沈扬凯 (237497819@qq.com & xkcoding.com).
+ * Copyright (c) 2019-2029, Dreamlu 卢春梦 (596392912@qq.com & www.dreamlu.net).
  * <p>
  * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE 3.0;
  * you may not use this file except in compliance with the License.
@@ -14,52 +14,42 @@
  * limitations under the License.
  */
 
-package com.xkcoding.http.support.okhttp3;
+package com.xkcoding.http.support.java11;
 
 import com.xkcoding.http.constants.Constants;
 import com.xkcoding.http.support.Http;
 import com.xkcoding.http.support.HttpHeader;
 import com.xkcoding.http.util.MapUtil;
 import com.xkcoding.http.util.StringUtil;
-import okhttp3.*;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Map;
 
 /**
- * <p>
- * OkHttp3 实现
- * </p>
+ * java 11 HttpClient
  *
- * @author yangkai.shen
- * @date Created in 2019/12/24 19:06
+ * @author L.cm
  */
-public class OkHttp3Impl implements Http {
-	private final OkHttpClient httpClient;
-	public static final MediaType CONTENT_TYPE_JSON = MediaType.get(Constants.CONTENT_TYPE_JSON);
+public class HttpClientImpl implements Http {
+	private final HttpClient client;
 
-
-	public OkHttp3Impl() {
-		this(new OkHttpClient().newBuilder()
-			.connectTimeout(Duration.ofMillis(Constants.TIMEOUT))
-			.writeTimeout(Duration.ofMillis(Constants.TIMEOUT))
-			.readTimeout(Duration.ofMillis(Constants.TIMEOUT))
-			.build());
+	public HttpClientImpl() {
+		this(HttpClient.newBuilder().connectTimeout(Duration.ofMillis(Constants.TIMEOUT)).build());
 	}
 
-	public OkHttp3Impl(OkHttpClient httpClient) {
-		this.httpClient = httpClient;
+	public HttpClientImpl(HttpClient client) {
+		this.client = client;
 	}
 
-	private String exec(Request request) {
-		try (Response response = httpClient.newCall(request).execute()) {
-			if (!response.isSuccessful()) {
-				throw new RuntimeException("Unexpected code " + response);
-			}
-
-			return response.body().string();
-		} catch (IOException e) {
+	private String exec(HttpRequest request) {
+		try {
+			return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+		} catch (IOException | InterruptedException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -99,21 +89,19 @@ public class OkHttp3Impl implements Http {
 	 */
 	@Override
 	public String get(String url, Map<String, String> params, HttpHeader header, boolean encode) {
-		HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
-		if (encode) {
-			MapUtil.forEach(params, urlBuilder::addEncodedQueryParameter);
-		} else {
-			MapUtil.forEach(params, urlBuilder::addQueryParameter);
-		}
-		HttpUrl httpUrl = urlBuilder.build();
+		String baseUrl = StringUtil.appendIfNotContain(url, "?", "&");
+		String reqUrl = baseUrl + MapUtil.parseMapToString(params, encode);
 
-		Request.Builder requestBuilder = new Request.Builder().url(httpUrl);
+		HttpRequest.Builder builder = HttpRequest.newBuilder()
+			.uri(URI.create(reqUrl))
+			.GET()
+			.timeout(Duration.ofMillis(Constants.TIMEOUT));
+
 		if (header != null) {
-			MapUtil.forEach(header.getHeaders(), requestBuilder::addHeader);
+			MapUtil.forEach(header.getHeaders(), builder::header);
 		}
-		Request request = requestBuilder.get().build();
 
-		return exec(request);
+		return exec(builder.build());
 	}
 
 	/**
@@ -124,7 +112,7 @@ public class OkHttp3Impl implements Http {
 	 */
 	@Override
 	public String post(String url) {
-		return this.post(url, Constants.EMPTY);
+		return this.post(url, null);
 	}
 
 	/**
@@ -149,18 +137,24 @@ public class OkHttp3Impl implements Http {
 	 */
 	@Override
 	public String post(String url, String data, HttpHeader header) {
-		if (StringUtil.isEmpty(data)) {
-			data = Constants.EMPTY;
-		}
-		RequestBody body = RequestBody.create(data, CONTENT_TYPE_JSON);
+		HttpRequest.Builder builder = HttpRequest.newBuilder()
+			.uri(URI.create(url))
+			.POST(HttpRequest.BodyPublishers.noBody())
+			.timeout(Duration.ofMillis(Constants.TIMEOUT));
 
-		Request.Builder requestBuilder = new Request.Builder().url(url);
+		if (StringUtil.isNotEmpty(data)) {
+			builder.POST(HttpRequest.BodyPublishers.ofString(data, Constants.DEFAULT_ENCODING));
+			builder.header(Constants.CONTENT_ENCODING, Constants.DEFAULT_ENCODING.displayName());
+			builder.header(Constants.CONTENT_TYPE, Constants.CONTENT_TYPE_JSON);
+		} else {
+			builder.POST(HttpRequest.BodyPublishers.noBody());
+		}
+
 		if (header != null) {
-			MapUtil.forEach(header.getHeaders(), requestBuilder::addHeader);
+			MapUtil.forEach(header.getHeaders(), builder::header);
 		}
-		Request request = requestBuilder.post(body).build();
 
-		return exec(request);
+		return this.exec(builder.build());
 	}
 
 	/**
@@ -187,20 +181,8 @@ public class OkHttp3Impl implements Http {
 	 */
 	@Override
 	public String post(String url, Map<String, String> params, HttpHeader header, boolean encode) {
-		FormBody.Builder formBuilder = new FormBody.Builder();
-		if (encode) {
-			MapUtil.forEach(params, formBuilder::addEncoded);
-		} else {
-			MapUtil.forEach(params, formBuilder::add);
-		}
-		FormBody body = formBuilder.build();
-
-		Request.Builder requestBuilder = new Request.Builder().url(url);
-		if (header != null) {
-			MapUtil.forEach(header.getHeaders(), requestBuilder::addHeader);
-		}
-		Request request = requestBuilder.post(body).build();
-
-		return exec(request);
+		String baseUrl = StringUtil.appendIfNotContain(url, "?", "&");
+		String reqUrl = baseUrl + MapUtil.parseMapToString(params, encode);
+		return this.post(reqUrl, null, header);
 	}
 }
