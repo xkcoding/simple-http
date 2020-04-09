@@ -23,6 +23,7 @@ import com.xkcoding.http.support.HttpHeader;
 import com.xkcoding.http.util.MapUtil;
 import com.xkcoding.http.util.StringUtil;
 import okhttp3.*;
+import org.apache.http.HttpHeaders;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -37,8 +38,8 @@ import java.util.Map;
  * @date Created in 2019/12/24 19:06
  */
 public class OkHttp3Impl implements Http {
-	private final OkHttpClient httpClient;
 	public static final MediaType CONTENT_TYPE_JSON = MediaType.get(Constants.CONTENT_TYPE_JSON);
+	private final OkHttpClient httpClient;
 
 
 	public OkHttp3Impl() {
@@ -53,7 +54,9 @@ public class OkHttp3Impl implements Http {
 		this.httpClient = httpClient;
 	}
 
-	private String exec(Request request) {
+	private String exec(Request.Builder requestBuilder) {
+		this.addHeader(requestBuilder);
+		Request request = requestBuilder.build();
 		try (Response response = httpClient.newCall(request).execute()) {
 			if (!response.isSuccessful()) {
 				throw new SimpleHttpException("Unexpected code " + response);
@@ -63,6 +66,15 @@ public class OkHttp3Impl implements Http {
 		} catch (IOException e) {
 			throw new SimpleHttpException(e);
 		}
+	}
+
+	/**
+	 * 添加request header
+	 *
+	 * @param builder Request.Builder
+	 */
+	private void addHeader(Request.Builder builder) {
+		builder.header(HttpHeaders.USER_AGENT, Constants.USER_AGENT);
 	}
 
 	/**
@@ -112,9 +124,9 @@ public class OkHttp3Impl implements Http {
 		if (header != null) {
 			MapUtil.forEach(header.getHeaders(), requestBuilder::addHeader);
 		}
-		Request request = requestBuilder.get().build();
+		requestBuilder = requestBuilder.get();
 
-		return exec(request);
+		return exec(requestBuilder);
 	}
 
 	/**
@@ -159,9 +171,9 @@ public class OkHttp3Impl implements Http {
 		if (header != null) {
 			MapUtil.forEach(header.getHeaders(), requestBuilder::addHeader);
 		}
-		Request request = requestBuilder.post(body).build();
+		requestBuilder = requestBuilder.post(body);
 
-		return exec(request);
+		return exec(requestBuilder);
 	}
 
 	/**
@@ -200,8 +212,8 @@ public class OkHttp3Impl implements Http {
 		if (header != null) {
 			MapUtil.forEach(header.getHeaders(), requestBuilder::addHeader);
 		}
-		Request request = requestBuilder.post(body).build();
+		requestBuilder = requestBuilder.post(body);
 
-		return exec(request);
+		return exec(requestBuilder);
 	}
 }

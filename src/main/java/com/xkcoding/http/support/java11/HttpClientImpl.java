@@ -22,6 +22,7 @@ import com.xkcoding.http.support.Http;
 import com.xkcoding.http.support.HttpHeader;
 import com.xkcoding.http.util.MapUtil;
 import com.xkcoding.http.util.StringUtil;
+import org.apache.http.HttpHeaders;
 
 import java.io.IOException;
 import java.net.URI;
@@ -47,12 +48,23 @@ public class HttpClientImpl implements Http {
 		this.client = client;
 	}
 
-	private String exec(HttpRequest request) {
+	private String exec(HttpRequest.Builder builder) {
+		this.addHeader(builder);
 		try {
+			HttpRequest request = builder.build();
 			return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
 		} catch (IOException | InterruptedException e) {
 			throw new SimpleHttpException(e);
 		}
+	}
+
+	/**
+	 * 添加request header
+	 *
+	 * @param builder HttpRequest.Builder
+	 */
+	private void addHeader(HttpRequest.Builder builder) {
+		builder.header(HttpHeaders.USER_AGENT, Constants.USER_AGENT);
 	}
 
 	/**
@@ -102,7 +114,7 @@ public class HttpClientImpl implements Http {
 			MapUtil.forEach(header.getHeaders(), builder::header);
 		}
 
-		return exec(builder.build());
+		return exec(builder);
 	}
 
 	/**
@@ -154,7 +166,7 @@ public class HttpClientImpl implements Http {
 			MapUtil.forEach(header.getHeaders(), builder::header);
 		}
 
-		return this.exec(builder.build());
+		return this.exec(builder);
 	}
 
 	/**

@@ -22,6 +22,8 @@ import com.xkcoding.http.support.Http;
 import com.xkcoding.http.support.HttpHeader;
 import com.xkcoding.http.util.MapUtil;
 import com.xkcoding.http.util.StringUtil;
+import org.apache.http.Header;
+import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -60,6 +62,7 @@ public class HttpClientImpl implements Http {
 	}
 
 	private String exec(HttpRequestBase request) {
+		this.addHeader(request);
 		// 设置超时时长
 		request.setConfig(RequestConfig.custom()
 			.setConnectTimeout(Constants.TIMEOUT)
@@ -80,6 +83,19 @@ public class HttpClientImpl implements Http {
 			return body.toString();
 		} catch (IOException e) {
 			throw new SimpleHttpException(e);
+		}
+	}
+
+	/**
+	 * 添加request header
+	 *
+	 * @param request HttpRequestBase
+	 */
+	private void addHeader(HttpRequestBase request) {
+		String ua = HttpHeaders.USER_AGENT;
+		Header[] headers = request.getHeaders(ua);
+		if (null == headers || headers.length == 0) {
+			request.addHeader(ua, Constants.USER_AGENT);
 		}
 	}
 
