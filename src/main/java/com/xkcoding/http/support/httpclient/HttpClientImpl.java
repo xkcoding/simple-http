@@ -23,7 +23,6 @@ import com.xkcoding.http.support.HttpHeader;
 import com.xkcoding.http.util.MapUtil;
 import com.xkcoding.http.util.StringUtil;
 import org.apache.http.Header;
-import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -64,11 +63,7 @@ public class HttpClientImpl implements Http {
 	private String exec(HttpRequestBase request) {
 		this.addHeader(request);
 		// 设置超时时长
-		request.setConfig(RequestConfig.custom()
-			.setConnectTimeout(Constants.TIMEOUT)
-			.setSocketTimeout(Constants.TIMEOUT)
-			.setConnectionRequestTimeout(Constants.TIMEOUT)
-			.build());
+		request.setConfig(RequestConfig.custom().setConnectTimeout(Constants.TIMEOUT).setSocketTimeout(Constants.TIMEOUT).setConnectionRequestTimeout(Constants.TIMEOUT).build());
 
 		try (CloseableHttpResponse response = this.httpClient.execute(request)) {
 			if (!isSuccess(response)) {
@@ -92,10 +87,10 @@ public class HttpClientImpl implements Http {
 	 * @param request HttpRequestBase
 	 */
 	private void addHeader(HttpRequestBase request) {
-		String ua = HttpHeaders.USER_AGENT;
+		String ua = Constants.USER_AGENT;
 		Header[] headers = request.getHeaders(ua);
 		if (null == headers || headers.length == 0) {
-			request.addHeader(ua, Constants.USER_AGENT);
+			request.addHeader(ua, Constants.USER_AGENT_DATA);
 		}
 	}
 
@@ -113,6 +108,7 @@ public class HttpClientImpl implements Http {
 	 * GET 请求
 	 *
 	 * @param url URL
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -126,6 +122,7 @@ public class HttpClientImpl implements Http {
 	 * @param url    URL
 	 * @param params 参数
 	 * @param encode 是否需要 url encode
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -140,6 +137,7 @@ public class HttpClientImpl implements Http {
 	 * @param params 参数
 	 * @param header 请求头
 	 * @param encode 是否需要 url encode
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -160,6 +158,7 @@ public class HttpClientImpl implements Http {
 	 * POST 请求
 	 *
 	 * @param url URL
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -173,6 +172,7 @@ public class HttpClientImpl implements Http {
 	 *
 	 * @param url  URL
 	 * @param data JSON 参数
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -186,6 +186,7 @@ public class HttpClientImpl implements Http {
 	 * @param url    URL
 	 * @param data   JSON 参数
 	 * @param header 请求头
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -212,6 +213,7 @@ public class HttpClientImpl implements Http {
 	 * @param url    URL
 	 * @param params form 参数
 	 * @param encode 是否需要 url encode
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -226,6 +228,7 @@ public class HttpClientImpl implements Http {
 	 * @param params form 参数
 	 * @param header 请求头
 	 * @param encode 是否需要 url encode
+	 *
 	 * @return 结果
 	 */
 	@Override

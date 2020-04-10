@@ -23,7 +23,6 @@ import com.xkcoding.http.support.HttpHeader;
 import com.xkcoding.http.util.MapUtil;
 import com.xkcoding.http.util.StringUtil;
 import okhttp3.*;
-import org.apache.http.HttpHeaders;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -43,11 +42,7 @@ public class OkHttp3Impl implements Http {
 
 
 	public OkHttp3Impl() {
-		this(new OkHttpClient().newBuilder()
-			.connectTimeout(Duration.ofMillis(Constants.TIMEOUT))
-			.writeTimeout(Duration.ofMillis(Constants.TIMEOUT))
-			.readTimeout(Duration.ofMillis(Constants.TIMEOUT))
-			.build());
+		this(new OkHttpClient().newBuilder().connectTimeout(Duration.ofMillis(Constants.TIMEOUT)).writeTimeout(Duration.ofMillis(Constants.TIMEOUT)).readTimeout(Duration.ofMillis(Constants.TIMEOUT)).build());
 	}
 
 	public OkHttp3Impl(OkHttpClient httpClient) {
@@ -74,13 +69,14 @@ public class OkHttp3Impl implements Http {
 	 * @param builder Request.Builder
 	 */
 	private void addHeader(Request.Builder builder) {
-		builder.header(HttpHeaders.USER_AGENT, Constants.USER_AGENT);
+		builder.header(Constants.USER_AGENT, Constants.USER_AGENT_DATA);
 	}
 
 	/**
 	 * GET 请求
 	 *
 	 * @param url URL
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -94,6 +90,7 @@ public class OkHttp3Impl implements Http {
 	 * @param url    URL
 	 * @param params 参数
 	 * @param encode 是否需要 url encode
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -108,6 +105,7 @@ public class OkHttp3Impl implements Http {
 	 * @param params 参数
 	 * @param header 请求头
 	 * @param encode 是否需要 url encode
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -133,6 +131,7 @@ public class OkHttp3Impl implements Http {
 	 * POST 请求
 	 *
 	 * @param url URL
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -145,6 +144,7 @@ public class OkHttp3Impl implements Http {
 	 *
 	 * @param url  URL
 	 * @param data JSON 参数
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -158,6 +158,7 @@ public class OkHttp3Impl implements Http {
 	 * @param url    URL
 	 * @param data   JSON 参数
 	 * @param header 请求头
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -182,6 +183,7 @@ public class OkHttp3Impl implements Http {
 	 * @param url    URL
 	 * @param params form 参数
 	 * @param encode 是否需要 url encode
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -196,6 +198,7 @@ public class OkHttp3Impl implements Http {
 	 * @param params form 参数
 	 * @param header 请求头
 	 * @param encode 是否需要 url encode
+	 *
 	 * @return 结果
 	 */
 	@Override

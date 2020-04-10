@@ -22,7 +22,6 @@ import com.xkcoding.http.support.Http;
 import com.xkcoding.http.support.HttpHeader;
 import com.xkcoding.http.util.MapUtil;
 import com.xkcoding.http.util.StringUtil;
-import org.apache.http.HttpHeaders;
 
 import java.io.IOException;
 import java.net.URI;
@@ -64,13 +63,14 @@ public class HttpClientImpl implements Http {
 	 * @param builder HttpRequest.Builder
 	 */
 	private void addHeader(HttpRequest.Builder builder) {
-		builder.header(HttpHeaders.USER_AGENT, Constants.USER_AGENT);
+		builder.header(Constants.USER_AGENT, Constants.USER_AGENT_DATA);
 	}
 
 	/**
 	 * GET 请求
 	 *
 	 * @param url URL
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -84,6 +84,7 @@ public class HttpClientImpl implements Http {
 	 * @param url    URL
 	 * @param params 参数
 	 * @param encode 是否需要 url encode
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -98,6 +99,7 @@ public class HttpClientImpl implements Http {
 	 * @param params 参数
 	 * @param header 请求头
 	 * @param encode 是否需要 url encode
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -105,10 +107,7 @@ public class HttpClientImpl implements Http {
 		String baseUrl = StringUtil.appendIfNotContain(url, "?", "&");
 		String reqUrl = baseUrl + MapUtil.parseMapToString(params, encode);
 
-		HttpRequest.Builder builder = HttpRequest.newBuilder()
-			.uri(URI.create(reqUrl))
-			.GET()
-			.timeout(Duration.ofMillis(Constants.TIMEOUT));
+		HttpRequest.Builder builder = HttpRequest.newBuilder().uri(URI.create(reqUrl)).GET().timeout(Duration.ofMillis(Constants.TIMEOUT));
 
 		if (header != null) {
 			MapUtil.forEach(header.getHeaders(), builder::header);
@@ -121,6 +120,7 @@ public class HttpClientImpl implements Http {
 	 * POST 请求
 	 *
 	 * @param url URL
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -133,6 +133,7 @@ public class HttpClientImpl implements Http {
 	 *
 	 * @param url  URL
 	 * @param data JSON 参数
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -146,13 +147,12 @@ public class HttpClientImpl implements Http {
 	 * @param url    URL
 	 * @param data   JSON 参数
 	 * @param header 请求头
+	 *
 	 * @return 结果
 	 */
 	@Override
 	public String post(String url, String data, HttpHeader header) {
-		HttpRequest.Builder builder = HttpRequest.newBuilder()
-			.uri(URI.create(url))
-			.timeout(Duration.ofMillis(Constants.TIMEOUT));
+		HttpRequest.Builder builder = HttpRequest.newBuilder().uri(URI.create(url)).timeout(Duration.ofMillis(Constants.TIMEOUT));
 
 		if (StringUtil.isNotEmpty(data)) {
 			builder.POST(HttpRequest.BodyPublishers.ofString(data, Constants.DEFAULT_ENCODING));
@@ -175,6 +175,7 @@ public class HttpClientImpl implements Http {
 	 * @param url    URL
 	 * @param params form 参数
 	 * @param encode 是否需要 url encode
+	 *
 	 * @return 结果
 	 */
 	@Override
@@ -189,6 +190,7 @@ public class HttpClientImpl implements Http {
 	 * @param params form 参数
 	 * @param header 请求头
 	 * @param encode 是否需要 url encode
+	 *
 	 * @return 结果
 	 */
 	@Override

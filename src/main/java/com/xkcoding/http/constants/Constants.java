@@ -54,12 +54,18 @@ public interface Constants {
 	String CONTENT_ENCODING = "Content-Encoding";
 
 	/**
+	 * User-Agent
+	 */
+	String USER_AGENT = "User-Agent";
+
+	/**
+	 * 模拟 User-Agent
+	 */
+	String USER_AGENT_DATA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 simple-http";
+
+	/**
 	 * 空字符串
 	 */
 	String EMPTY = "";
 
-	/**
-	 * User-Agent
-	 */
-	String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36 simple-http";
 }
