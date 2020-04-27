@@ -43,20 +43,29 @@ public class HttpUtil {
 		Http defaultProxy = null;
 		ClassLoader classLoader = HttpUtil.class.getClassLoader();
 		// 基于 java 11 HttpClient
-		if (ClassUtil.isPresent("java.net.http.HttpClient", classLoader)) {
-			defaultProxy = new com.xkcoding.http.support.java11.HttpClientImpl();
+		if (ClassUtil.isPresent("java.net.http.HttpClient", classLoader) && proxy == null) {
+			try {
+				defaultProxy = new com.xkcoding.http.support.java11.HttpClientImpl();
+			}catch (Exception e){}
+
 		}
 		// 基于 okhttp3
-		else if (ClassUtil.isPresent("okhttp3.OkHttpClient", classLoader)) {
+		if (ClassUtil.isPresent("okhttp3.OkHttpClient", classLoader) && proxy == null) {
+			try {
 			defaultProxy = new OkHttp3Impl();
+			}catch (Exception e){}
 		}
 		// 基于 httpclient
-		else if (ClassUtil.isPresent("org.apache.http.impl.client.HttpClients", classLoader)) {
+		if (ClassUtil.isPresent("org.apache.http.impl.client.HttpClients", classLoader) && proxy == null) {
+			try {
 			defaultProxy = new HttpClientImpl();
+			}catch (Exception e){}
 		}
 		// 基于 hutool
-		else if (ClassUtil.isPresent("cn.hutool.http.HttpRequest", classLoader)) {
+		if (ClassUtil.isPresent("cn.hutool.http.HttpRequest", classLoader) && proxy == null) {
+			try {
 			defaultProxy = new HutoolImpl();
+			}catch (Exception e){}
 		}
 		proxy = defaultProxy;
 	}
@@ -64,7 +73,7 @@ public class HttpUtil {
 	public void setHttp(Http http) {
 		proxy = http;
 	}
-	
+
 	private void checkHttpNotNull(Http proxy) {
 		if (null == proxy) {
 			throw new SimpleHttpException("HTTP 实现类未指定！");
