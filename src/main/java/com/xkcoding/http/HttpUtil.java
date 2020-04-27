@@ -43,29 +43,29 @@ public class HttpUtil {
 		Http defaultProxy = null;
 		ClassLoader classLoader = HttpUtil.class.getClassLoader();
 		// 基于 java 11 HttpClient
-		if (ClassUtil.isPresent("java.net.http.HttpClient", classLoader) && proxy == null) {
+		if (ClassUtil.isPresent("java.net.http.HttpClient", classLoader)) {
 			try {
 				defaultProxy = new com.xkcoding.http.support.java11.HttpClientImpl();
-			}catch (Exception e){}
+			}catch (Throwable e){}
 
 		}
 		// 基于 okhttp3
-		if (ClassUtil.isPresent("okhttp3.OkHttpClient", classLoader) && proxy == null) {
+		if (ClassUtil.isPresent("okhttp3.OkHttpClient", classLoader) && defaultProxy == null) {
 			try {
-			defaultProxy = new OkHttp3Impl();
-			}catch (Exception e){}
+				defaultProxy = new OkHttp3Impl();
+			}catch (Throwable e){}
 		}
 		// 基于 httpclient
-		if (ClassUtil.isPresent("org.apache.http.impl.client.HttpClients", classLoader) && proxy == null) {
+		if (ClassUtil.isPresent("org.apache.http.impl.client.HttpClients", classLoader) && defaultProxy == null) {
 			try {
-			defaultProxy = new HttpClientImpl();
-			}catch (Exception e){}
+				defaultProxy = new HttpClientImpl();
+			}catch (Throwable e){}
 		}
 		// 基于 hutool
-		if (ClassUtil.isPresent("cn.hutool.http.HttpRequest", classLoader) && proxy == null) {
+		if (ClassUtil.isPresent("cn.hutool.http.HttpRequest", classLoader) && defaultProxy == null) {
 			try {
-			defaultProxy = new HutoolImpl();
-			}catch (Exception e){}
+				defaultProxy = new HutoolImpl();
+			}catch (Throwable e){}
 		}
 		proxy = defaultProxy;
 	}
