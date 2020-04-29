@@ -1,6 +1,7 @@
 package java.net.http;
 
 import java.io.IOException;
+import java.net.ProxySelector;
 import java.time.Duration;
 
 /**
@@ -18,6 +19,8 @@ public abstract class HttpClient {
 
 	public interface Builder {
 		Builder connectTimeout(Duration duration);
+
+		Builder proxy(ProxySelector proxySelector);
 
 		HttpClient build();
 	}

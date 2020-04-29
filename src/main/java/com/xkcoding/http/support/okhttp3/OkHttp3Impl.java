@@ -16,9 +16,10 @@
 
 package com.xkcoding.http.support.okhttp3;
 
+import com.xkcoding.http.config.HttpConfig;
 import com.xkcoding.http.constants.Constants;
 import com.xkcoding.http.exception.SimpleHttpException;
-import com.xkcoding.http.support.Http;
+import com.xkcoding.http.support.AbstractHttp;
 import com.xkcoding.http.support.HttpHeader;
 import com.xkcoding.http.util.MapUtil;
 import com.xkcoding.http.util.StringUtil;
@@ -36,22 +37,35 @@ import java.util.Map;
  * @author yangkai.shen
  * @date Created in 2019/12/24 19:06
  */
-public class OkHttp3Impl implements Http {
+public class OkHttp3Impl extends AbstractHttp {
 	public static final MediaType CONTENT_TYPE_JSON = MediaType.get(Constants.CONTENT_TYPE_JSON);
-	private final OkHttpClient httpClient;
-
+	private final OkHttpClient.Builder httpClientBuilder;
 
 	public OkHttp3Impl() {
-		this(new OkHttpClient().newBuilder().connectTimeout(Duration.ofMillis(Constants.TIMEOUT)).writeTimeout(Duration.ofMillis(Constants.TIMEOUT)).readTimeout(Duration.ofMillis(Constants.TIMEOUT)).build());
+		this(new HttpConfig());
 	}
 
-	public OkHttp3Impl(OkHttpClient httpClient) {
-		this.httpClient = httpClient;
+	public OkHttp3Impl(HttpConfig httpConfig) {
+		this(new OkHttpClient().newBuilder(), httpConfig);
+	}
+
+	public OkHttp3Impl(OkHttpClient.Builder httpClientBuilder, HttpConfig httpConfig) {
+		super(httpConfig);
+		this.httpClientBuilder = httpClientBuilder;
 	}
 
 	private String exec(Request.Builder requestBuilder) {
 		this.addHeader(requestBuilder);
 		Request request = requestBuilder.build();
+
+		OkHttpClient httpClient;
+		// 设置代理
+		if (null != httpConfig.getProxy()) {
+			httpClient = httpClientBuilder.connectTimeout(Duration.ofMillis(httpConfig.getTimeout())).writeTimeout(Duration.ofMillis(httpConfig.getTimeout())).readTimeout(Duration.ofMillis(httpConfig.getTimeout())).proxy(httpConfig.getProxy()).build();
+		} else {
+			httpClient = httpClientBuilder.connectTimeout(Duration.ofMillis(httpConfig.getTimeout())).writeTimeout(Duration.ofMillis(httpConfig.getTimeout())).readTimeout(Duration.ofMillis(httpConfig.getTimeout())).build();
+		}
+
 		try (Response response = httpClient.newCall(request).execute()) {
 			if (!response.isSuccessful()) {
 				throw new SimpleHttpException("Unexpected code " + response);
@@ -76,7 +90,6 @@ public class OkHttp3Impl implements Http {
 	 * GET 请求
 	 *
 	 * @param url URL
-	 *
 	 * @return 结果
 	 */
 	@Override
@@ -90,7 +103,6 @@ public class OkHttp3Impl implements Http {
 	 * @param url    URL
 	 * @param params 参数
 	 * @param encode 是否需要 url encode
-	 *
 	 * @return 结果
 	 */
 	@Override
@@ -105,7 +117,6 @@ public class OkHttp3Impl implements Http {
 	 * @param params 参数
 	 * @param header 请求头
 	 * @param encode 是否需要 url encode
-	 *
 	 * @return 结果
 	 */
 	@Override
@@ -131,7 +142,6 @@ public class OkHttp3Impl implements Http {
 	 * POST 请求
 	 *
 	 * @param url URL
-	 *
 	 * @return 结果
 	 */
 	@Override
@@ -144,7 +154,6 @@ public class OkHttp3Impl implements Http {
 	 *
 	 * @param url  URL
 	 * @param data JSON 参数
-	 *
 	 * @return 结果
 	 */
 	@Override
@@ -158,7 +167,6 @@ public class OkHttp3Impl implements Http {
 	 * @param url    URL
 	 * @param data   JSON 参数
 	 * @param header 请求头
-	 *
 	 * @return 结果
 	 */
 	@Override
@@ -183,7 +191,6 @@ public class OkHttp3Impl implements Http {
 	 * @param url    URL
 	 * @param params form 参数
 	 * @param encode 是否需要 url encode
-	 *
 	 * @return 结果
 	 */
 	@Override
@@ -198,7 +205,6 @@ public class OkHttp3Impl implements Http {
 	 * @param params form 参数
 	 * @param header 请求头
 	 * @param encode 是否需要 url encode
-	 *
 	 * @return 结果
 	 */
 	@Override

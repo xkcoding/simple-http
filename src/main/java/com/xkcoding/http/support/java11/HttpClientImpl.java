@@ -16,9 +16,10 @@
 
 package com.xkcoding.http.support.java11;
 
+import com.xkcoding.http.config.HttpConfig;
 import com.xkcoding.http.constants.Constants;
 import com.xkcoding.http.exception.SimpleHttpException;
-import com.xkcoding.http.support.Http;
+import com.xkcoding.http.support.AbstractHttp;
 import com.xkcoding.http.support.HttpHeader;
 import com.xkcoding.http.util.MapUtil;
 import com.xkcoding.http.util.StringUtil;
@@ -36,20 +37,32 @@ import java.util.Map;
  *
  * @author L.cm
  */
-public class HttpClientImpl implements Http {
-	private final HttpClient client;
+public class HttpClientImpl extends AbstractHttp {
+	private final HttpClient.Builder clientBuilder;
 
 	public HttpClientImpl() {
-		this(HttpClient.newBuilder().connectTimeout(Duration.ofMillis(Constants.TIMEOUT)).build());
+		this(new HttpConfig());
 	}
 
-	public HttpClientImpl(HttpClient client) {
-		this.client = client;
+	public HttpClientImpl(HttpConfig httpConfig) {
+		this(HttpClient.newBuilder(), httpConfig);
+	}
+
+	public HttpClientImpl(HttpClient.Builder clientBuilder, HttpConfig httpConfig) {
+		super(httpConfig);
+		this.clientBuilder = clientBuilder;
 	}
 
 	private String exec(HttpRequest.Builder builder) {
 		this.addHeader(builder);
 		try {
+			HttpClient client;
+			
+			if (null != httpConfig.getProxy()) {
+				client = clientBuilder.connectTimeout(Duration.ofMillis(httpConfig.getTimeout())).proxy(new DefaultProxySelector(httpConfig)).build();
+			} else {
+				client = clientBuilder.connectTimeout(Duration.ofMillis(httpConfig.getTimeout())).build();
+			}
 			HttpRequest request = builder.build();
 			return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
 		} catch (IOException | InterruptedException e) {
@@ -70,7 +83,6 @@ public class HttpClientImpl implements Http {
 	 * GET 请求
 	 *
 	 * @param url URL
-	 *
 	 * @return 结果
 	 */
 	@Override
@@ -84,7 +96,6 @@ public class HttpClientImpl implements Http {
 	 * @param url    URL
 	 * @param params 参数
 	 * @param encode 是否需要 url encode
-	 *
 	 * @return 结果
 	 */
 	@Override
@@ -99,7 +110,6 @@ public class HttpClientImpl implements Http {
 	 * @param params 参数
 	 * @param header 请求头
 	 * @param encode 是否需要 url encode
-	 *
 	 * @return 结果
 	 */
 	@Override
@@ -107,7 +117,7 @@ public class HttpClientImpl implements Http {
 		String baseUrl = StringUtil.appendIfNotContain(url, "?", "&");
 		String reqUrl = baseUrl + MapUtil.parseMapToString(params, encode);
 
-		HttpRequest.Builder builder = HttpRequest.newBuilder().uri(URI.create(reqUrl)).GET().timeout(Duration.ofMillis(Constants.TIMEOUT));
+		HttpRequest.Builder builder = HttpRequest.newBuilder().uri(URI.create(reqUrl)).GET().timeout(Duration.ofMillis(Constants.DEFAULT_TIMEOUT));
 
 		if (header != null) {
 			MapUtil.forEach(header.getHeaders(), builder::header);
@@ -120,7 +130,6 @@ public class HttpClientImpl implements Http {
 	 * POST 请求
 	 *
 	 * @param url URL
-	 *
 	 * @return 结果
 	 */
 	@Override
@@ -133,7 +142,6 @@ public class HttpClientImpl implements Http {
 	 *
 	 * @param url  URL
 	 * @param data JSON 参数
-	 *
 	 * @return 结果
 	 */
 	@Override
@@ -147,12 +155,11 @@ public class HttpClientImpl implements Http {
 	 * @param url    URL
 	 * @param data   JSON 参数
 	 * @param header 请求头
-	 *
 	 * @return 结果
 	 */
 	@Override
 	public String post(String url, String data, HttpHeader header) {
-		HttpRequest.Builder builder = HttpRequest.newBuilder().uri(URI.create(url)).timeout(Duration.ofMillis(Constants.TIMEOUT));
+		HttpRequest.Builder builder = HttpRequest.newBuilder().uri(URI.create(url)).timeout(Duration.ofMillis(Constants.DEFAULT_TIMEOUT));
 
 		if (StringUtil.isNotEmpty(data)) {
 			builder.POST(HttpRequest.BodyPublishers.ofString(data, Constants.DEFAULT_ENCODING));
@@ -175,7 +182,6 @@ public class HttpClientImpl implements Http {
 	 * @param url    URL
 	 * @param params form 参数
 	 * @param encode 是否需要 url encode
-	 *
 	 * @return 结果
 	 */
 	@Override
@@ -190,7 +196,6 @@ public class HttpClientImpl implements Http {
 	 * @param params form 参数
 	 * @param header 请求头
 	 * @param encode 是否需要 url encode
-	 *
 	 * @return 结果
 	 */
 	@Override

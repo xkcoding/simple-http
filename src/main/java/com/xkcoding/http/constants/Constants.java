@@ -31,7 +31,7 @@ public interface Constants {
 	/**
 	 * 超时时长，单位毫秒
 	 */
-	int TIMEOUT = 3000;
+	int DEFAULT_TIMEOUT = 3000;
 
 	/**
 	 * 编码格式
