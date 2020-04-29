@@ -23,6 +23,16 @@
 
 - 默认会按照下面的优先级自行寻找底层实现，`java 11 HttpClient -> OkHttp3 -> apache HttpClient -> hutool-http`
 - 也可以自行实现 `com.xkcoding.http.support.Http` 接口，通过 `HttpUtil.setHttp(new MyHttpImpl())` 设置进来
+- 可以配置超时时间及代理
+
+```java
+HttpConfig config = new HttpConfig();
+config.setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 10080)));
+config.setTimeout(15000);
+HttpUtil.setConfig(config);
+String s = HttpUtil.get("https://www.google.com");
+System.out.println("s = " + s);
+```
 
 ## TODO
 
