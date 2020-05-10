@@ -6,7 +6,7 @@
 
   <groupId>com.xkcoding.http</groupId>
   <artifactId>simple-http</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.2-SNAPSHOT</version>
 
   <name>${project.artifactId}</name>
   <url>https://github.com/xkcoding/simple-http</url>
@@ -18,9 +18,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <okhttp3.version>4.2.2</okhttp3.version>
-    <httpclient.version>4.5.10</httpclient.version>
-    <hutool.version>5.1.0</hutool.version>
+    <okhttp3.version>4.5.0</okhttp3.version>
+    <httpclient.version>4.5.12</httpclient.version>
+    <hutool.version>5.2.5</hutool.version>
   </properties>
 
   <developers>
@@ -208,19 +208,16 @@
       <name>aliyun</name>
       <url>http://maven.aliyun.com/nexus/content/groups/public</url>
     </repository>
-    <!--xkcoding 私服-->
-    <repository>
-      <id>xkcoding-nexus</id>
-      <name>xkcoding nexus</name>
-      <url>https://nexus.xkcoding.com/repository/maven-public/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
   </repositories>
+
+  <pluginRepositories>
+    <!--阿里云私服-->
+    <pluginRepository>
+      <id>aliyun</id>
+      <name>aliyun</name>
+      <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+    </pluginRepository>
+  </pluginRepositories>
 
   <profiles>
     <profile>

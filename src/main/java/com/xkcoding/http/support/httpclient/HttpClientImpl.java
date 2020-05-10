@@ -16,14 +16,15 @@
 
 package com.xkcoding.http.support.httpclient;
 
+import com.xkcoding.http.config.HttpConfig;
 import com.xkcoding.http.constants.Constants;
 import com.xkcoding.http.exception.SimpleHttpException;
-import com.xkcoding.http.support.Http;
+import com.xkcoding.http.support.AbstractHttp;
 import com.xkcoding.http.support.HttpHeader;
 import com.xkcoding.http.util.MapUtil;
 import com.xkcoding.http.util.StringUtil;
 import org.apache.http.Header;
-import org.apache.http.HttpHeaders;
+import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -38,6 +39,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,25 +53,35 @@ import java.util.Map;
  * @author yangkai.shen
  * @date Created in 2019/12/25 09:24
  */
-public class HttpClientImpl implements Http {
+public class HttpClientImpl extends AbstractHttp {
 	private final CloseableHttpClient httpClient;
 
 	public HttpClientImpl() {
-		this(HttpClients.createDefault());
+		this(HttpClients.createDefault(), new HttpConfig());
 	}
 
-	public HttpClientImpl(CloseableHttpClient httpClient) {
+	public HttpClientImpl(HttpConfig httpConfig) {
+		this(HttpClients.createDefault(), httpConfig);
+	}
+
+	public HttpClientImpl(CloseableHttpClient httpClient, HttpConfig httpConfig) {
+		super(httpConfig);
 		this.httpClient = httpClient;
 	}
 
 	private String exec(HttpRequestBase request) {
 		this.addHeader(request);
 		// 设置超时时长
-		request.setConfig(RequestConfig.custom()
-			.setConnectTimeout(Constants.TIMEOUT)
-			.setSocketTimeout(Constants.TIMEOUT)
-			.setConnectionRequestTimeout(Constants.TIMEOUT)
-			.build());
+		RequestConfig.Builder configBuilder = RequestConfig.custom().setConnectTimeout(httpConfig.getTimeout()).setSocketTimeout(httpConfig.getTimeout()).setConnectionRequestTimeout(httpConfig.getTimeout());
+		// 设置代理
+		if (null != httpConfig.getProxy()) {
+			Proxy proxy = httpConfig.getProxy();
+			InetSocketAddress address = (InetSocketAddress) proxy.address();
+			HttpHost host = new HttpHost(address.getHostName(), address.getPort(), proxy.type().name().toLowerCase());
+			configBuilder.setProxy(host);
+		}
+
+		request.setConfig(configBuilder.build());
 
 		try (CloseableHttpResponse response = this.httpClient.execute(request)) {
 			if (!isSuccess(response)) {
@@ -92,10 +105,10 @@ public class HttpClientImpl implements Http {
 	 * @param request HttpRequestBase
 	 */
 	private void addHeader(HttpRequestBase request) {
-		String ua = HttpHeaders.USER_AGENT;
+		String ua = Constants.USER_AGENT;
 		Header[] headers = request.getHeaders(ua);
 		if (null == headers || headers.length == 0) {
-			request.addHeader(ua, Constants.USER_AGENT);
+			request.addHeader(ua, Constants.USER_AGENT_DATA);
 		}
 	}
 

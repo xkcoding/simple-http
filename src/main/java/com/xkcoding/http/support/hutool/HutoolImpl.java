@@ -18,9 +18,9 @@ package com.xkcoding.http.support.hutool;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
-import com.xkcoding.http.constants.Constants;
+import com.xkcoding.http.config.HttpConfig;
 import com.xkcoding.http.exception.SimpleHttpException;
-import com.xkcoding.http.support.Http;
+import com.xkcoding.http.support.AbstractHttp;
 import com.xkcoding.http.support.HttpHeader;
 import com.xkcoding.http.util.MapUtil;
 import com.xkcoding.http.util.StringUtil;
@@ -36,9 +36,23 @@ import java.util.Map;
  * @author yangkai.shen
  * @date Created in 2019/12/24 19:08
  */
-public class HutoolImpl implements Http {
+public class HutoolImpl extends AbstractHttp {
+	public HutoolImpl() {
+		this(new HttpConfig());
+	}
+
+	public HutoolImpl(HttpConfig httpConfig) {
+		super(httpConfig);
+	}
+
 	private String exec(HttpRequest request) {
-		request = request.timeout(Constants.TIMEOUT);
+		// 设置超时时长
+		request = request.timeout(httpConfig.getTimeout());
+		// 设置代理
+		if (null != httpConfig.getProxy()) {
+			request = request.setProxy(httpConfig.getProxy());
+		}
+
 		try (HttpResponse response = request.execute()) {
 			if (!response.isOk()) {
 				throw new SimpleHttpException("Unexpected code " + response);
