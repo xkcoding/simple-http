@@ -1,7 +1,10 @@
 package com.xkcoding.http.config;
 
 import com.xkcoding.http.constants.Constants;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.net.Proxy;
 
@@ -14,6 +17,9 @@ import java.net.Proxy;
  * @date Created in 2020-04-29 14:41
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class HttpConfig {
 	/**
 	 * 超时时长，单位毫秒

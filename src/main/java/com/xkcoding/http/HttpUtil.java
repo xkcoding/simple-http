@@ -17,6 +17,7 @@
 package com.xkcoding.http;
 
 import com.xkcoding.http.config.HttpConfig;
+import com.xkcoding.http.constants.Constants;
 import com.xkcoding.http.exception.SimpleHttpException;
 import com.xkcoding.http.support.AbstractHttp;
 import com.xkcoding.http.support.Http;
@@ -86,7 +87,7 @@ public class HttpUtil {
 	public void setConfig(HttpConfig httpConfig) {
 		checkHttpNotNull(proxy);
 		if (null == httpConfig) {
-			httpConfig = new HttpConfig();
+			httpConfig = HttpConfig.builder().timeout(Constants.DEFAULT_TIMEOUT).build();
 		}
 		proxy.setHttpConfig(httpConfig);
 	}
