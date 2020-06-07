@@ -85,6 +85,9 @@ public class HttpUtil {
 
 	public void setConfig(HttpConfig httpConfig) {
 		checkHttpNotNull(proxy);
+		if (null == httpConfig) {
+			httpConfig = new HttpConfig();
+		}
 		proxy.setHttpConfig(httpConfig);
 	}
 
