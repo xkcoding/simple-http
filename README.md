@@ -36,3 +36,4 @@ System.out.println("s = " + s);
 ## TODO
 
 - [x] ~~集成 JDK11 的 HTTPClient~~(感谢[@春哥](https://github.com/ChunMengLu)的 [PR#1](https://github.com/xkcoding/simple-http/pull/1))
+- [x] ~~支持代理~~(感谢[@亚东](https://github.com/zhangyd-c)的 [PR#7](https://github.com/xkcoding/simple-http/pull/7))
