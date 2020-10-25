@@ -57,7 +57,7 @@ public class HttpClientImpl extends AbstractHttp {
 		this.addHeader(builder);
 		try {
 			HttpClient client;
-			
+
 			if (null != httpConfig.getProxy()) {
 				client = clientBuilder.connectTimeout(Duration.ofMillis(httpConfig.getTimeout())).proxy(new DefaultProxySelector(httpConfig)).build();
 			} else {
@@ -117,7 +117,7 @@ public class HttpClientImpl extends AbstractHttp {
 		String baseUrl = StringUtil.appendIfNotContain(url, "?", "&");
 		String reqUrl = baseUrl + MapUtil.parseMapToString(params, encode);
 
-		HttpRequest.Builder builder = HttpRequest.newBuilder().uri(URI.create(reqUrl)).GET().timeout(Duration.ofMillis(Constants.DEFAULT_TIMEOUT));
+		HttpRequest.Builder builder = HttpRequest.newBuilder().uri(URI.create(reqUrl)).GET().timeout(Duration.ofMillis(httpConfig.getTimeout()));
 
 		if (header != null) {
 			MapUtil.forEach(header.getHeaders(), builder::header);
@@ -159,7 +159,7 @@ public class HttpClientImpl extends AbstractHttp {
 	 */
 	@Override
 	public String post(String url, String data, HttpHeader header) {
-		HttpRequest.Builder builder = HttpRequest.newBuilder().uri(URI.create(url)).timeout(Duration.ofMillis(Constants.DEFAULT_TIMEOUT));
+		HttpRequest.Builder builder = HttpRequest.newBuilder().uri(URI.create(url)).timeout(Duration.ofMillis(httpConfig.getTimeout()));
 
 		if (StringUtil.isNotEmpty(data)) {
 			builder.POST(HttpRequest.BodyPublishers.ofString(data, Constants.DEFAULT_ENCODING));
