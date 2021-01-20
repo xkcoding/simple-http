@@ -20,7 +20,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <okhttp3.version>4.5.0</okhttp3.version>
     <httpclient.version>4.5.12</httpclient.version>
-    <hutool.version>5.2.5</hutool.version>
+    <hutool.version>5.5.7</hutool.version>
   </properties>
 
   <developers>
