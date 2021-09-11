@@ -16,6 +16,7 @@
 
 package com.xkcoding.http.support.okhttp3;
 
+import com.xkcoding.http.support.SimpleHttpResponse;
 import com.xkcoding.http.config.HttpConfig;
 import com.xkcoding.http.constants.Constants;
 import com.xkcoding.http.exception.SimpleHttpException;
@@ -27,6 +28,7 @@ import okhttp3.*;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,7 +56,7 @@ public class OkHttp3Impl extends AbstractHttp {
 		this.httpClientBuilder = httpClientBuilder;
 	}
 
-	private String exec(Request.Builder requestBuilder) {
+	private SimpleHttpResponse exec(Request.Builder requestBuilder) {
 		this.addHeader(requestBuilder);
 		Request request = requestBuilder.build();
 
@@ -67,13 +69,15 @@ public class OkHttp3Impl extends AbstractHttp {
 		}
 
 		try (Response response = httpClient.newCall(request).execute()) {
-			if (!response.isSuccessful()) {
-				throw new SimpleHttpException("Unexpected code " + response);
-			}
 
-			return response.body().string();
+			int code = response.code();
+			boolean successful = response.isSuccessful();
+			Map<String, List<String>> headers = request.headers().toMultimap();
+			String body = response.body().string();
+			return new SimpleHttpResponse(successful,code,headers,body);
 		} catch (IOException e) {
-			throw new SimpleHttpException(e);
+			e.printStackTrace();
+			return new SimpleHttpResponse(false,400,null,null);
 		}
 	}
 
@@ -93,7 +97,7 @@ public class OkHttp3Impl extends AbstractHttp {
 	 * @return 结果
 	 */
 	@Override
-	public String get(String url) {
+	public SimpleHttpResponse get(String url) {
 		return this.get(url, null, false);
 	}
 
@@ -106,7 +110,7 @@ public class OkHttp3Impl extends AbstractHttp {
 	 * @return 结果
 	 */
 	@Override
-	public String get(String url, Map<String, String> params, boolean encode) {
+	public SimpleHttpResponse get(String url, Map<String, String> params, boolean encode) {
 		return this.get(url, params, null, encode);
 	}
 
@@ -120,7 +124,7 @@ public class OkHttp3Impl extends AbstractHttp {
 	 * @return 结果
 	 */
 	@Override
-	public String get(String url, Map<String, String> params, HttpHeader header, boolean encode) {
+	public SimpleHttpResponse get(String url, Map<String, String> params, HttpHeader header, boolean encode) {
 		HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
 		if (encode) {
 			MapUtil.forEach(params, urlBuilder::addEncodedQueryParameter);
@@ -145,7 +149,7 @@ public class OkHttp3Impl extends AbstractHttp {
 	 * @return 结果
 	 */
 	@Override
-	public String post(String url) {
+	public SimpleHttpResponse post(String url) {
 		return this.post(url, Constants.EMPTY);
 	}
 
@@ -157,7 +161,7 @@ public class OkHttp3Impl extends AbstractHttp {
 	 * @return 结果
 	 */
 	@Override
-	public String post(String url, String data) {
+	public SimpleHttpResponse post(String url, String data) {
 		return this.post(url, data, null);
 	}
 
@@ -170,7 +174,7 @@ public class OkHttp3Impl extends AbstractHttp {
 	 * @return 结果
 	 */
 	@Override
-	public String post(String url, String data, HttpHeader header) {
+	public SimpleHttpResponse post(String url, String data, HttpHeader header) {
 		if (StringUtil.isEmpty(data)) {
 			data = Constants.EMPTY;
 		}
@@ -194,7 +198,7 @@ public class OkHttp3Impl extends AbstractHttp {
 	 * @return 结果
 	 */
 	@Override
-	public String post(String url, Map<String, String> params, boolean encode) {
+	public SimpleHttpResponse post(String url, Map<String, String> params, boolean encode) {
 		return this.post(url, params, null, encode);
 	}
 
@@ -208,7 +212,7 @@ public class OkHttp3Impl extends AbstractHttp {
 	 * @return 结果
 	 */
 	@Override
-	public String post(String url, Map<String, String> params, HttpHeader header, boolean encode) {
+	public SimpleHttpResponse post(String url, Map<String, String> params, HttpHeader header, boolean encode) {
 		FormBody.Builder formBuilder = new FormBody.Builder();
 		if (encode) {
 			MapUtil.forEach(params, formBuilder::addEncoded);
@@ -225,4 +229,6 @@ public class OkHttp3Impl extends AbstractHttp {
 
 		return exec(requestBuilder);
 	}
+
+
 }

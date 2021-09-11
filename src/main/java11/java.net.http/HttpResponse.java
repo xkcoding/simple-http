@@ -1,5 +1,4 @@
 package java.net.http;
-
 /**
  * For the Java 8 compatibility when compiled with JDK 11+.
  *
@@ -8,6 +7,8 @@ package java.net.http;
 public interface HttpResponse<T> {
 
 	T body();
+	HttpHeaders headers();
+	int statusCode();
 
 	interface BodyHandler<T> {
 

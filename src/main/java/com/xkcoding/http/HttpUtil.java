@@ -22,6 +22,7 @@ import com.xkcoding.http.exception.SimpleHttpException;
 import com.xkcoding.http.support.AbstractHttp;
 import com.xkcoding.http.support.Http;
 import com.xkcoding.http.support.HttpHeader;
+import com.xkcoding.http.support.SimpleHttpResponse;
 import com.xkcoding.http.util.ClassUtil;
 import lombok.experimental.UtilityClass;
 
@@ -98,7 +99,7 @@ public class HttpUtil {
 	 * @param url URL
 	 * @return 结果
 	 */
-	public String get(String url) {
+	public SimpleHttpResponse get(String url) {
 		checkHttpNotNull(proxy);
 		return proxy.get(url);
 	}
@@ -111,7 +112,7 @@ public class HttpUtil {
 	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
-	public String get(String url, Map<String, String> params, boolean encode) {
+	public SimpleHttpResponse get(String url, Map<String, String> params, boolean encode) {
 		checkHttpNotNull(proxy);
 		return proxy.get(url, params, encode);
 	}
@@ -125,7 +126,7 @@ public class HttpUtil {
 	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
-	public String get(String url, Map<String, String> params, HttpHeader header, boolean encode) {
+	public SimpleHttpResponse get(String url, Map<String, String> params, HttpHeader header, boolean encode) {
 		checkHttpNotNull(proxy);
 		return proxy.get(url, params, header, encode);
 	}
@@ -136,7 +137,7 @@ public class HttpUtil {
 	 * @param url URL
 	 * @return 结果
 	 */
-	public String post(String url) {
+	public SimpleHttpResponse post(String url) {
 		checkHttpNotNull(proxy);
 		return proxy.post(url);
 	}
@@ -148,7 +149,7 @@ public class HttpUtil {
 	 * @param data JSON 参数
 	 * @return 结果
 	 */
-	public String post(String url, String data) {
+	public SimpleHttpResponse post(String url, String data) {
 		checkHttpNotNull(proxy);
 		return proxy.post(url, data);
 	}
@@ -161,7 +162,7 @@ public class HttpUtil {
 	 * @param header 请求头
 	 * @return 结果
 	 */
-	public String post(String url, String data, HttpHeader header) {
+	public SimpleHttpResponse post(String url, String data, HttpHeader header) {
 		checkHttpNotNull(proxy);
 		return proxy.post(url, data, header);
 	}
@@ -174,7 +175,7 @@ public class HttpUtil {
 	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
-	public String post(String url, Map<String, String> params, boolean encode) {
+	public SimpleHttpResponse post(String url, Map<String, String> params, boolean encode) {
 		checkHttpNotNull(proxy);
 		return proxy.post(url, params, encode);
 	}
@@ -188,7 +189,7 @@ public class HttpUtil {
 	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
-	public String post(String url, Map<String, String> params, HttpHeader header, boolean encode) {
+	public SimpleHttpResponse post(String url, Map<String, String> params, HttpHeader header, boolean encode) {
 		checkHttpNotNull(proxy);
 		return proxy.post(url, params, header, encode);
 	}
