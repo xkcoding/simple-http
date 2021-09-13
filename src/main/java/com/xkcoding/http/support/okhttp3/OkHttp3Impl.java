@@ -72,7 +72,7 @@ public class OkHttp3Impl extends AbstractHttp {
 
 			int code = response.code();
 			boolean successful = response.isSuccessful();
-			Map<String, List<String>> headers = request.headers().toMultimap();
+			Map<String, List<String>> headers = response.headers().toMultimap();
 			String body = response.body().string();
 			return new SimpleHttpResponse(successful,code,headers,body);
 		} catch (IOException e) {
