@@ -33,7 +33,7 @@ public interface Http {
 	 * @param url URL
 	 * @return 结果
 	 */
-	String get(String url);
+	SimpleHttpResponse get(String url);
 
 	/**
 	 * GET 请求
@@ -43,7 +43,7 @@ public interface Http {
 	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
-	String get(String url, Map<String, String> params, boolean encode);
+	SimpleHttpResponse get(String url, Map<String, String> params, boolean encode);
 
 	/**
 	 * GET 请求
@@ -54,7 +54,7 @@ public interface Http {
 	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
-	String get(String url, Map<String, String> params, HttpHeader header, boolean encode);
+	SimpleHttpResponse get(String url, Map<String, String> params, HttpHeader header, boolean encode);
 
 	/**
 	 * POST 请求
@@ -62,7 +62,7 @@ public interface Http {
 	 * @param url URL
 	 * @return 结果
 	 */
-	String post(String url);
+	SimpleHttpResponse post(String url);
 
 	/**
 	 * POST 请求
@@ -71,7 +71,7 @@ public interface Http {
 	 * @param data JSON 参数
 	 * @return 结果
 	 */
-	String post(String url, String data);
+	SimpleHttpResponse post(String url, String data);
 
 	/**
 	 * POST 请求
@@ -81,7 +81,7 @@ public interface Http {
 	 * @param header 请求头
 	 * @return 结果
 	 */
-	String post(String url, String data, HttpHeader header);
+	SimpleHttpResponse post(String url, String data, HttpHeader header);
 
 	/**
 	 * POST 请求
@@ -91,7 +91,7 @@ public interface Http {
 	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
-	String post(String url, Map<String, String> params, boolean encode);
+	SimpleHttpResponse post(String url, Map<String, String> params, boolean encode);
 
 	/**
 	 * POST 请求
@@ -102,5 +102,5 @@ public interface Http {
 	 * @param encode 是否需要 url encode
 	 * @return 结果
 	 */
-	String post(String url, Map<String, String> params, HttpHeader header, boolean encode);
+	SimpleHttpResponse post(String url, Map<String, String> params, HttpHeader header, boolean encode);
 }
