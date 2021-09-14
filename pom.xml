@@ -18,9 +18,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <okhttp3.version>4.5.0</okhttp3.version>
+    <okhttp3.version>4.9.1</okhttp3.version>
     <httpclient.version>4.5.13</httpclient.version>
-    <hutool.version>5.5.7</hutool.version>
+    <hutool.version>5.7.11</hutool.version>
   </properties>
 
   <developers>
@@ -73,13 +73,13 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13.1</version>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>1.18.10</version>
+      <version>1.18.20</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
