@@ -57,7 +57,6 @@ public class HutoolImpl extends AbstractHttp {
 		}
 
 		try (HttpResponse response = request.execute()) {
-
 			int code = response.getStatus();
 			boolean successful = response.isOk();
 			String body = response.body();
