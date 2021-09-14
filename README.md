@@ -29,11 +29,13 @@ HttpUtil.setConfig(HttpConfig.builder()
 			.timeout(Constants.DEFAULT_TIMEOUT)
 			.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 10080)))
 			.build());
-String s = HttpUtil.get("https://www.google.com");
-System.out.println("s = " + s);
+SimpleHttpResponse response = HttpUtil.get("https://www.google.com");
+System.out.println("code = " + response.getCode());
+System.out.println("body = " + response.getBody());
 ```
 
 ## TODO
 
 - [x] ~~集成 JDK11 的 HTTPClient~~(感谢[@春哥](https://github.com/ChunMengLu)的 [PR#1](https://github.com/xkcoding/simple-http/pull/1))
 - [x] ~~支持代理~~(感谢[@亚东](https://github.com/zhangyd-c)的 [PR#7](https://github.com/xkcoding/simple-http/pull/7))
+- [x] ~~Response 封装~~(感谢[@小海](https://github.com/Mvbbb)的 [PR#11](https://github.com/xkcoding/simple-http/pull/11))
