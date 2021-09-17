@@ -18,16 +18,14 @@ package com.xkcoding.http.support.hutool;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
-import com.xkcoding.http.exception.SimpleHttpException;
-import com.xkcoding.http.support.SimpleHttpResponse;
 import com.xkcoding.http.config.HttpConfig;
 import com.xkcoding.http.support.AbstractHttp;
 import com.xkcoding.http.support.HttpHeader;
+import com.xkcoding.http.support.SimpleHttpResponse;
 import com.xkcoding.http.util.MapUtil;
 import com.xkcoding.http.util.StringUtil;
 import com.xkcoding.http.util.UrlUtil;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -61,10 +59,10 @@ public class HutoolImpl extends AbstractHttp {
 			boolean successful = response.isOk();
 			String body = response.body();
 			Map<String, List<String>> headers = response.headers();
-			return new SimpleHttpResponse(successful, code, headers, body);
-		}catch (RuntimeException e){
+			return new SimpleHttpResponse(successful, code, headers, body, null);
+		} catch (Exception e) {
 			e.printStackTrace();
-			return new SimpleHttpResponse(false,400,null,null);
+			return new SimpleHttpResponse(false, 500, null, null, e.getMessage());
 		}
 	}
 

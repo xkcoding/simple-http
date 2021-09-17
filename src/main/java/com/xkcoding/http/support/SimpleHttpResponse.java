@@ -23,4 +23,5 @@ public class SimpleHttpResponse {
 	private int code;
 	private Map<String, List<String>> headers;
 	private String body;
+	private String error;
 }

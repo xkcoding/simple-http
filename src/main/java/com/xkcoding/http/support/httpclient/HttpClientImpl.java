@@ -16,16 +16,14 @@
 
 package com.xkcoding.http.support.httpclient;
 
-import com.xkcoding.http.support.SimpleHttpResponse;
 import com.xkcoding.http.config.HttpConfig;
 import com.xkcoding.http.constants.Constants;
-import com.xkcoding.http.exception.SimpleHttpException;
 import com.xkcoding.http.support.AbstractHttp;
 import com.xkcoding.http.support.HttpHeader;
+import com.xkcoding.http.support.SimpleHttpResponse;
 import com.xkcoding.http.util.MapUtil;
 import com.xkcoding.http.util.StringUtil;
 import org.apache.http.Header;
-import org.apache.http.HeaderElement;
 import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
@@ -40,7 +38,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.ArrayList;
@@ -95,16 +92,16 @@ public class HttpClientImpl extends AbstractHttp {
 			}
 
 			int code = response.getStatusLine().getStatusCode();
-			boolean success = isSuccess(response);
+			boolean successful = isSuccess(response);
 			Map<String, List<String>> headers = Arrays.stream(response.getAllHeaders()).collect(Collectors.toMap(Header::getName, (value) -> {
 				ArrayList<String> headerValue = new ArrayList<>();
 				headerValue.add(value.getValue());
 				return headerValue;
-			},(oldValue,newValue)->newValue));
-			return new SimpleHttpResponse(success,code,headers, body.toString());
-		} catch (IOException e) {
+			}, (oldValue, newValue) -> newValue));
+			return new SimpleHttpResponse(successful, code, headers, body.toString(), null);
+		} catch (Exception e) {
 			e.printStackTrace();
-			return new SimpleHttpResponse(false,400,null,null);
+			return new SimpleHttpResponse(false, 500, null, null, e.getMessage());
 		}
 	}
 

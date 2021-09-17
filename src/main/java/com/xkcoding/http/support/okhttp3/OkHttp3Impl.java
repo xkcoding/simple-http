@@ -16,17 +16,15 @@
 
 package com.xkcoding.http.support.okhttp3;
 
-import com.xkcoding.http.support.SimpleHttpResponse;
 import com.xkcoding.http.config.HttpConfig;
 import com.xkcoding.http.constants.Constants;
-import com.xkcoding.http.exception.SimpleHttpException;
 import com.xkcoding.http.support.AbstractHttp;
 import com.xkcoding.http.support.HttpHeader;
+import com.xkcoding.http.support.SimpleHttpResponse;
 import com.xkcoding.http.util.MapUtil;
 import com.xkcoding.http.util.StringUtil;
 import okhttp3.*;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -73,11 +71,12 @@ public class OkHttp3Impl extends AbstractHttp {
 			int code = response.code();
 			boolean successful = response.isSuccessful();
 			Map<String, List<String>> headers = response.headers().toMultimap();
-			String body = response.body().string();
-			return new SimpleHttpResponse(successful,code,headers,body);
-		} catch (IOException e) {
+			ResponseBody responseBody = response.body();
+			String body = null == responseBody ? null : responseBody.string();
+			return new SimpleHttpResponse(successful, code, headers, body, null);
+		} catch (Exception e) {
 			e.printStackTrace();
-			return new SimpleHttpResponse(false,400,null,null);
+			return new SimpleHttpResponse(false, 500, null, null, e.getMessage());
 		}
 	}
 
