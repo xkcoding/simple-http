@@ -16,16 +16,14 @@
 
 package com.xkcoding.http.support.java11;
 
-import com.xkcoding.http.support.SimpleHttpResponse;
 import com.xkcoding.http.config.HttpConfig;
 import com.xkcoding.http.constants.Constants;
-import com.xkcoding.http.exception.SimpleHttpException;
 import com.xkcoding.http.support.AbstractHttp;
 import com.xkcoding.http.support.HttpHeader;
+import com.xkcoding.http.support.SimpleHttpResponse;
 import com.xkcoding.http.util.MapUtil;
 import com.xkcoding.http.util.StringUtil;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -69,17 +67,17 @@ public class HttpClientImpl extends AbstractHttp {
 			HttpResponse<String> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
 
 			int code = httpResponse.statusCode();
-			boolean success = isSuccess(httpResponse);
+			boolean successful = isSuccess(httpResponse);
 			Map<String, List<String>> headers = httpResponse.headers().map();
 			String body = httpResponse.body();
-			return new SimpleHttpResponse(success,code,headers,body);
-		} catch (IOException | InterruptedException e) {
+			return new SimpleHttpResponse(successful, code, headers, body, null);
+		} catch (Exception e) {
 			e.printStackTrace();
-			return new SimpleHttpResponse(false,400,null,null);
+			return new SimpleHttpResponse(false, 500, null, null, e.getMessage());
 		}
 	}
 
-	private boolean isSuccess(HttpResponse response) {
+	private boolean isSuccess(HttpResponse<String> response) {
 		if (response == null) {
 			return false;
 		}
