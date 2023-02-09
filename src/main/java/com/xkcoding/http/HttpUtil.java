@@ -43,10 +43,6 @@ public class HttpUtil {
 	private void selectHttpProxy() {
 		AbstractHttp defaultProxy = null;
 		ClassLoader classLoader = HttpUtil.class.getClassLoader();
-		// 基于 java 11 HttpClient
-		if (ClassUtil.isPresent("java.net.http.HttpClient", classLoader)) {
-			defaultProxy = getHttpProxy(com.xkcoding.http.support.java11.HttpClientImpl.class);
-		}
 		// 基于 okhttp3
 		if (null == defaultProxy && ClassUtil.isPresent("okhttp3.OkHttpClient", classLoader)) {
 			defaultProxy = getHttpProxy(com.xkcoding.http.support.okhttp3.OkHttp3Impl.class);
@@ -58,6 +54,10 @@ public class HttpUtil {
 		// 基于 hutool
 		if (null == defaultProxy && ClassUtil.isPresent("cn.hutool.http.HttpRequest", classLoader)) {
 			defaultProxy = getHttpProxy(com.xkcoding.http.support.hutool.HutoolImpl.class);
+		}
+		// 基于 java 11 HttpClient
+		if (null == defaultProxy && ClassUtil.isPresent("java.net.http.HttpClient", classLoader)) {
+			defaultProxy = getHttpProxy(com.xkcoding.http.support.java11.HttpClientImpl.class);
 		}
 
 		if (defaultProxy == null) {
