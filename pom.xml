@@ -18,7 +18,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <okhttp3.version>4.9.1</okhttp3.version>
+    <okhttp3.version>4.9.2</okhttp3.version>
     <httpclient.version>4.5.13</httpclient.version>
     <hutool.version>5.7.11</hutool.version>
   </properties>
